@@ -1,0 +1,23 @@
+{
+  "Author": "Kirin",
+  "Name": "Truth or Dare",
+  "InternalName": "FFToD",
+  "AssemblyVersion": "2.0.0.0",
+  "Description": "Truth or Dare mini-game automation plugin for FFXIV",
+  "ApplicableVersion": "any",
+  "RepoUrl": "https://github.com/kirin-xiv/FFToD",
+  "Tags": [
+    "minigame",
+    "social",
+    "chat",
+    "automation",
+    "rolls"
+  ],
+  "DalamudApiLevel": 13,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "CanUnloadAsync": false,
+  "LoadPriority": 0,
+  "Punchline": "Run ToD, Brain off!",
+  "AcceptsFeedback": true
+}
