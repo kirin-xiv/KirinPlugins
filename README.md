@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Status-Active-00D4AA?style=for-the-badge"/>
 </p>
 
-A curated collection of FFXIV plugins focused on party games, social automation, and utility tools. Includes both original creations and maintained versions of popular plugins with faster updates.
+A curated collection of FFXIV plugins focused on party games, social automation, and utility tools. Features original creations and maintained versions of popular plugins with faster updates.
 
 ## 🚀 Quick Installation
 
@@ -40,16 +40,6 @@ https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/pluginmaster.json
 - Echo/Say/Party/Yell/Shout channel support
 - Anti-spam protection
 
-### 📝 Wordsmith
-**Version:** 1.15.5  
-**Type:** Updated Version  
-**Description:** Text editor with roleplayers in mind  
-**Features:**
-- Automatic text breaking for easy copy/paste
-- Advanced text editing features
-- Built-in spellcheck
-- Thesaurus integration
-- Roleplay-focused tools
 
 ### 🛏️ Doze Anywhere
 **Version:** 0.2.2.6  
