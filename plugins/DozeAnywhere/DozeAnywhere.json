@@ -1,0 +1,15 @@
+{
+  "Author": "SoyaX",
+  "Name": "Doze Anywhere",
+  "InternalName": "DozeAnywhere",
+  "AssemblyVersion": "0.2.2.6",
+  "Description": "/dozeanywhere [nosnap]\n/sitanywhere",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 13,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "CanUnloadAsync": false,
+  "LoadPriority": 0,
+  "Punchline": "Anywhere is a bed, if you want it to be.",
+  "AcceptsFeedback": true
+}
