@@ -14,7 +14,7 @@
   "LoadSync": false,
   "CanUnloadAsync": false,
   "LoadPriority": 0,
+  "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/EorzeanScribe.ico",
   "Punchline": "Enhanced writing tools for roleplayers. [BETA]",
-  "AcceptsFeedback": true,
-  "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/EorzeanScribe.ico"
+  "AcceptsFeedback": true
 }
