@@ -79,5 +79,32 @@
     "IconUrl": "",
     "ImageUrls": [],
     "Changelog": "Kirin's updated version - Regular updates and compatibility maintenance"
+  },
+  {
+    "Author": "Kirin",
+    "Name": "EorzeanScribe (Beta)",
+    "InternalName": "EorzeanScribe",
+    "AssemblyVersion": "1.0.0.0",
+    "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/kirin-xiv/EorzeaScribe",
+    "Tags": ["roleplay", "writing", "spellcheck", "thesaurus", "text", "formatting", "social", "utility"],
+    "DalamudApiLevel": 13,
+    "LoadRequiredState": 0,
+    "LoadSync": false,
+    "CanUnloadAsync": false,
+    "LoadPriority": 0,
+    "Punchline": "Enhanced writing tools for roleplayers. [BETA]",
+    "AcceptsFeedback": true,
+    "IsHide": false,
+    "IsTestingExclusive": false,
+    "DownloadLinkInstall": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/plugins/EorzeanScribe/latest.zip",
+    "DownloadLinkUpdate": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/plugins/EorzeanScribe/latest.zip",
+    "DownloadLinkTesting": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/plugins/EorzeanScribe/latest.zip",
+    "DownloadCount": 0,
+    "LastUpdate": 0,
+    "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/EorzeanScribe.ico",
+    "ImageUrls": [],
+    "Changelog": "Version 1.0.0 - Initial release with spell checking, thesaurus integration, and writing assistance"
   }
 ]
