@@ -1,21 +1,19 @@
 {
   "Author": "Kirin",
   "Name": "EorzeanScribe (Beta)",
-  "Punchline": "Enhanced writing tools for roleplayers. [BETA]",
-  "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
   "InternalName": "EorzeanScribe",
-  "AssemblyVersion": "1.0.0.0",
+  "AssemblyVersion": "1.0.1.0",
+  "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
   "ApplicableVersion": "any",
+  "Tags": [
+    "Social",
+    "Utility"
+  ],
   "DalamudApiLevel": 13,
   "LoadRequiredState": 0,
   "LoadSync": false,
   "CanUnloadAsync": false,
   "LoadPriority": 0,
-  "AcceptsFeedback": true,
-  "IconUrl": "images/icon.ico",
-  "Tags": [
-    "Social",
-    "Utility"
-  ],
-  "IsHide": "False"
+  "Punchline": "Enhanced writing tools for roleplayers. [BETA]",
+  "AcceptsFeedback": true
 }
