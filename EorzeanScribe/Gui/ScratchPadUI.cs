@@ -86,6 +86,65 @@ internal sealed class ScratchPadUI : Window
     private float _lastWidth = 0;
     private float _lastScale = ImGuiHelpers.GlobalScale;
     
+    /// <summary>
+    /// If true, the user has chosen not to see public channel warnings for this session.
+    /// </summary>
+    private bool _suppressPublicWarningsThisSession = false;
+    
+    /// <summary>
+    /// Callback to execute after public channel confirmation
+    /// </summary>
+    private Action? _pendingPublicChannelAction = null;
+    
+    /// <summary>
+    /// Shows a confirmation dialog for posting to public channels if needed, then executes the action.
+    /// </summary>
+    private void PerformPostWithConfirmation(Action postAction)
+    {
+        // Skip confirmation if disabled in config or already suppressed for this session
+        if (!EorzeanScribe.Configuration.ConfirmPublicChannels || _suppressPublicWarningsThisSession)
+        {
+            postAction();
+            return;
+        }
+        
+        // Check if current header is a public channel
+        if (!this._header.ChatType.IsPublicChannel())
+        {
+            postAction();
+            return;
+        }
+        
+        // Store the action and show confirmation dialog
+        _pendingPublicChannelAction = postAction;
+        string channelName = this._header.ChatType.ToString();
+        EorzeanScribeUI.ShowMessageBox(
+            "Public Channel Warning", 
+            $"You're about to post to {channelName}, which is a public channel that others can see.\n\nAre you sure you want to continue?",
+            MessageBox.ButtonStyle.YesNo | MessageBox.ButtonStyle.NeverAgain,
+            OnPublicChannelConfirmation
+        );
+    }
+    
+    /// <summary>
+    /// Handles the response from the public channel confirmation dialog
+    /// </summary>
+    private void OnPublicChannelConfirmation(MessageBox messageBox)
+    {
+        // Check if "Don't show again for this session" was clicked
+        if ((messageBox.Result & MessageBox.DialogResult.NeverAgain) == MessageBox.DialogResult.NeverAgain)
+        {
+            _suppressPublicWarningsThisSession = true;
+            _pendingPublicChannelAction?.Invoke();
+        }
+        else if ((messageBox.Result & MessageBox.DialogResult.Yes) == MessageBox.DialogResult.Yes)
+        {
+            _pendingPublicChannelAction?.Invoke();
+        }
+        
+        _pendingPublicChannelAction = null;
+    }
+    
     // Button feedback state - tracking
     private int? _currentlyCopiedChunk = null; // Only one chunk can be "copied" at a time (clipboard)
     private HashSet<int> _postedChunks = new(); // Posted chunks stay permanent
@@ -117,6 +176,9 @@ internal sealed class ScratchPadUI : Window
         // this.Flags |= ImGuiWindowFlags.NoScrollbar;
         // this.Flags |= ImGuiWindowFlags.NoScrollWithMouse;
         this.Flags |= ImGuiWindowFlags.MenuBar;
+        
+        // Reset public channel warning suppression for each new scratchpad
+        this._suppressPublicWarningsThisSession = false;
 
         //this._spellchecktimer.Elapsed += ( object? s, System.Timers.ElapsedEventArgs e ) => { this._spellchecktimer.Stop(); this.DoSpellCheck(); };
         this.Header.DataChanged += OnDataChanged;
@@ -539,9 +601,12 @@ internal sealed class ScratchPadUI : Window
                     
                     if ( ImGui.Button( $"{postButtonText}##Chunk{i}Post", new( buttonWidth + 20, 0 ) ) )
                     {
-                        PostChunkToChat( this._chunks[i], i, this._chunks.Count );
-                        // Mark as posted permanently
-                        _postedChunks.Add(i);
+                        int chunkIndex = i; // Capture for lambda
+                        PerformPostWithConfirmation(() => {
+                            PostChunkToChat( this._chunks[chunkIndex], chunkIndex, this._chunks.Count );
+                            // Mark as posted permanently
+                            _postedChunks.Add(chunkIndex);
+                        });
                     }
                     
                     if (wasPosted)

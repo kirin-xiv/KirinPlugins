@@ -99,4 +99,13 @@ internal static class ChatTypeExtensions
 
         return pattern;
     }
+
+    /// <summary>
+    /// Determines if this chat type is considered a "public" channel that others can see.
+    /// </summary>
+    internal static bool IsPublicChannel(this ChatType c)
+    {
+        return c == ChatType.Say || c == ChatType.FC || c == ChatType.Shout || 
+               c == ChatType.Yell || c == ChatType.Linkshell || c == ChatType.CrossWorldLinkshell;
+    }
 }

@@ -22,6 +22,7 @@ internal sealed class SettingsUI : Window
     private int _searchHistoryCountChange = EorzeanScribe.Configuration.SearchHistoryCount;
     private bool _researchToTopChange = EorzeanScribe.Configuration.ResearchToTop;
     private bool _trackWordStats = EorzeanScribe.Configuration.TrackWordStatistics;
+    private bool _confirmPublicChannels = EorzeanScribe.Configuration.ConfirmPublicChannels;
 
     // Scratch Pad settings.
     private bool _autoClear = EorzeanScribe.Configuration.AutomaticallyClearAfterLastCopy;
@@ -121,6 +122,9 @@ internal sealed class SettingsUI : Window
             {
                 ImGui.Checkbox( "Track Word Usage.", ref this._trackWordStats );
                 ImGuiExt.SetHoveredTooltip( "This is a metric to help you avoid using the same words too often by counting each time you use a word." );
+
+                ImGui.Checkbox( "Confirm Public Channel Posts", ref this._confirmPublicChannels );
+                ImGuiExt.SetHoveredTooltip( "When enabled, shows a confirmation dialog before posting to public channels (Say, FC, Shout, Yell, Linkshells)." );
 
                 //Search history count
                 //ImGui.DragInt("Search History Size", ref _searchHistoryCountChange, 0.1f, 1, 50);
@@ -574,6 +578,7 @@ internal sealed class SettingsUI : Window
         this._searchHistoryCountChange = EorzeanScribe.Configuration.SearchHistoryCount;
         this._researchToTopChange = EorzeanScribe.Configuration.ResearchToTop;
         this._trackWordStats = EorzeanScribe.Configuration.TrackWordStatistics;
+        this._confirmPublicChannels = EorzeanScribe.Configuration.ConfirmPublicChannels;
 
         // Scratch Pad settings.
         this._autoClear = EorzeanScribe.Configuration.AutomaticallyClearAfterLastCopy;
@@ -615,6 +620,7 @@ internal sealed class SettingsUI : Window
         EorzeanScribe.Configuration.SearchHistoryCount = this._searchHistoryCountChange;
         EorzeanScribe.Configuration.ResearchToTop = this._researchToTopChange;
         EorzeanScribe.Configuration.TrackWordStatistics = this._trackWordStats;
+        EorzeanScribe.Configuration.ConfirmPublicChannels = this._confirmPublicChannels;
 
         // Scratch Pad settings.
         EorzeanScribe.Configuration.AutomaticallyClearAfterLastCopy = _autoClear;

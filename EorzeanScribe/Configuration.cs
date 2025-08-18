@@ -37,6 +37,11 @@ public sealed class Configuration : IPluginConfiguration
     /// If <see langword="true"/> enables trackng word usage.
     /// </summary>
     public bool TrackWordStatistics {  get; set; } = true;
+    
+    /// <summary>
+    /// If <see langword="true"/> shows confirmation dialog before copying to public channels.
+    /// </summary>
+    public bool ConfirmPublicChannels { get; set; } = true;
     #endregion
 
     #region Scratch Pad Settings
