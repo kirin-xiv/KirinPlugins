@@ -2005,6 +2005,18 @@ internal sealed class ScratchPadUI : Window
     {
         try
         {
+            // Check if a valid chat channel is selected
+            if (this._header.ChatType == ChatType.None)
+            {
+                EorzeanScribe.NotificationManager.AddNotification(new()
+                {
+                    Content = "Please select a chat channel before posting!",
+                    Title = "EorzeanScribe",
+                    Type = Dalamud.Interface.ImGuiNotification.NotificationType.Warning
+                });
+                return;
+            }
+            
             // Create the complete text for this chunk
             string completeText = CreateCompleteTextChunk(chunk, chunkIndex, totalChunks);
             
