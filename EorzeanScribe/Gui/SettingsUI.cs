@@ -514,7 +514,7 @@ internal sealed class SettingsUI : Window
                 EorzeanScribeUI.ShowMessageBox( "Found a bug?", "If you found a bug, please post as much useful information as possible.\nThe more you are able to share with me the faster I can find the problem and fix it.\nUseful information could be:\n\t* Screenshots\n\t* Description of what you were doing\n\t* Number of pads open\n\t* Dalamud.log file\n\t* EorzeanScribe.json config file\n\nGo to GitHub to report the bug?", MessageBox.ButtonStyle.YesNo, (m) =>
                 {
                     if ( m.Result == MessageBox.DialogResult.Yes )
-                        System.Diagnostics.Process.Start( new System.Diagnostics.ProcessStartInfo( "https://github.com/MythicPalette/Wordsmith-DalamudPlugin/issues" ) { UseShellExecute = true } );
+                        System.Diagnostics.Process.Start( new System.Diagnostics.ProcessStartInfo( "https://github.com/kirin-xiv/KirinPlugins/issues" ) { UseShellExecute = true } );
                 } );                
             }
 

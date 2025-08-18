@@ -609,9 +609,10 @@ internal sealed class ScratchPadUI : Window
                     {
                         int chunkIndex = i; // Capture for lambda
                         PerformPostWithConfirmation(() => {
-                            PostChunkToChat( this._chunks[chunkIndex], chunkIndex, this._chunks.Count );
-                            // Mark as posted permanently
-                            _postedChunks.Add(chunkIndex);
+                            bool success = PostChunkToChat( this._chunks[chunkIndex], chunkIndex, this._chunks.Count );
+                            // Only mark as posted if it actually succeeded
+                            if (success)
+                                _postedChunks.Add(chunkIndex);
                         });
                     }
                     
@@ -2018,7 +2019,7 @@ internal sealed class ScratchPadUI : Window
     /// <param name="chunk">The text chunk to post</param>
     /// <param name="chunkIndex">Index of the chunk for display purposes</param>
     /// <param name="totalChunks">Total number of chunks for display purposes</param>
-    private void PostChunkToChat(TextChunk chunk, int chunkIndex, int totalChunks)
+    private bool PostChunkToChat(TextChunk chunk, int chunkIndex, int totalChunks)
     {
         try
         {
@@ -2027,7 +2028,7 @@ internal sealed class ScratchPadUI : Window
             {
                 this._statusMessage = "Please select a chat channel before posting!";
                 this._statusMessageExpiry = DateTime.Now.AddSeconds(5);
-                return;
+                return false;
             }
             
             // Create the complete text for this chunk
@@ -2047,6 +2048,8 @@ internal sealed class ScratchPadUI : Window
                 Title = "EorzeanScribe",
                 Type = Dalamud.Interface.ImGuiNotification.NotificationType.Success
             });
+            
+            return true;
         }
         catch (Exception ex)
         {
@@ -2058,6 +2061,8 @@ internal sealed class ScratchPadUI : Window
                 Title = "EorzeanScribe",
                 Type = Dalamud.Interface.ImGuiNotification.NotificationType.Error
             });
+            
+            return false;
         }
     }
 
