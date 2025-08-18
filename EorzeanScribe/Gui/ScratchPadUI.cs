@@ -97,6 +97,12 @@ internal sealed class ScratchPadUI : Window
     private Action? _pendingPublicChannelAction = null;
     
     /// <summary>
+    /// Error message to display in the UI instead of toast notifications
+    /// </summary>
+    private string _statusMessage = "";
+    private DateTime _statusMessageExpiry = DateTime.MinValue;
+    
+    /// <summary>
     /// Shows a confirmation dialog for posting to public channels if needed, then executes the action.
     /// </summary>
     private void PerformPostWithConfirmation(Action postAction)
@@ -629,6 +635,17 @@ internal sealed class ScratchPadUI : Window
             {
                 ImGui.SetNextItemWidth( -1 );
                 ImGui.TextWrapped( $"{this._header}{this.ScratchString.Unwrap()}" );
+            }
+
+            // Display status message if active
+            if (!string.IsNullOrEmpty(this._statusMessage) && DateTime.Now < this._statusMessageExpiry)
+            {
+                ImGui.Spacing();
+                ImGui.TextColored(new System.Numerics.Vector4(1.0f, 0.8f, 0.0f, 1.0f), this._statusMessage);
+            }
+            else if (DateTime.Now >= this._statusMessageExpiry)
+            {
+                this._statusMessage = "";
             }
 
             if ( this._textchanged )
@@ -2008,12 +2025,8 @@ internal sealed class ScratchPadUI : Window
             // Check if a valid chat channel is selected
             if (this._header.ChatType == ChatType.None)
             {
-                EorzeanScribe.NotificationManager.AddNotification(new()
-                {
-                    Content = "Please select a chat channel before posting!",
-                    Title = "EorzeanScribe",
-                    Type = Dalamud.Interface.ImGuiNotification.NotificationType.Warning
-                });
+                this._statusMessage = "Please select a chat channel before posting!";
+                this._statusMessageExpiry = DateTime.Now.AddSeconds(5);
                 return;
             }
             
