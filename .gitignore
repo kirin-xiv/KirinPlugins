@@ -5,3 +5,4 @@ patchnotes/
 *.user
 checklist.txt
 build/
+.claude/

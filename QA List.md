@@ -3,14 +3,14 @@ This file is a checklist of important things to check during quality assurance p
 
 After having several releases with blatant issues that were quickly noticed, identified, and patched I decided it would be wise to have a QA list to ensure this is minimized in the future.
 
-This list can and will certainly change over time to ensure that the quality of Wordsmith remains to its highest standard when and where possible.
+This list can and will certainly change over time to ensure that the quality of EorzeaScribe remains to its highest standard when and where possible.
 
-To ensure quality for the end user, all testing should be done a RELEASE build of Wordsmith NOT a DEBUG build. This is to ensure that the version shipped to users works properly and not just the testing version.
+To ensure quality for the end user, all testing should be done a RELEASE build of EorzeaScribe NOT a DEBUG build. This is to ensure that the version shipped to users works properly and not just the testing version.
 
 # General
     [ ] Performance test
 
-# Scratch Pad
+# Text Composer
     [ ] Aliases
         * Can use aliases
 
@@ -21,10 +21,10 @@ To ensure quality for the end user, all testing should be done a RELEASE build o
         * Linkshell names show
 
     [ ] Menu Bar
-        * Scratch Pads
-            ** New Scratch Pad
-            ** Does not show current Scratch Pad
-            ** Shows hidden pads
+        * Text Composers
+            ** New Text Composer
+            ** Does not show current Text Composer
+            ** Shows hidden composers
 
         * Text
             ** Clear/Undo Clear
@@ -38,7 +38,7 @@ To ensure quality for the end user, all testing should be done a RELEASE build o
             ** Refresh on OOC change
 
         * View History
-            ** Reload Pad State
+            ** Reload Composer State
             ** Copy Text To Clipboard
             ** Delete
             ** Delete All
@@ -79,7 +79,6 @@ To ensure quality for the end user, all testing should be done a RELEASE build o
 
     [ ] Bug report button
 
-    [ ] Buy me a ko-fi button
 
     [ ] Custom dictionary
         * Can add items
