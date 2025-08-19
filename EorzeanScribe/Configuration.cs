@@ -24,7 +24,7 @@ public sealed class Configuration : IPluginConfiguration
     /// The API key for API Ninjas Thesaurus API (unrestricted word support)
     /// Get your free key at: https://api.api-ninjas.com/
     /// </summary>
-    public string ThesaurusApiKey { get; set; } = "";
+    public string ThesaurusApiKey { get; set; } = "IKvpY7mhExTydfNLj8oh5w==yroLZCLNcg8gu600";
 
     /// <summary>
     /// This is enabled when a save is performed to notify that changes
@@ -33,10 +33,6 @@ public sealed class Configuration : IPluginConfiguration
     internal bool RecentlySaved { get; set; } = false;
 
 
-    /// <summary>
-    /// If <see langword="true"/> enables trackng word usage.
-    /// </summary>
-    public bool TrackWordStatistics {  get; set; } = true;
     
     /// <summary>
     /// If <see langword="true"/> shows confirmation dialog before copying to public channels.
@@ -44,21 +40,10 @@ public sealed class Configuration : IPluginConfiguration
     public bool ConfirmPublicChannels { get; set; } = true;
     #endregion
 
-    #region Scratch Pad Settings
+    #region Text Editor Settings
     //
-    // Scrach Pad Settings
+    // Text Editor Settings
     //
-
-    /// <summary>
-    /// When true, scratchpads are disposed when closed.
-    /// </summary>
-    public bool DeleteClosedScratchPads { get; set; } = true;
-
-    /// <summary>
-    /// When true, a confirmation window will pop up asking if the user would like to delete
-    /// the scratch pad that they closed with the Delete Pad button or through settings.
-    /// </summary>
-    public bool ConfirmDeleteClosePads { get; set; } = true;
 
     /// <summary>
     /// If true, the spellchecker will not attempt to match words ending in a hyphen.
@@ -113,24 +98,20 @@ public sealed class Configuration : IPluginConfiguration
     public bool ContinuationMarkerOnLast { get; set; } = true;
 
     /// <summary>
-    /// If true, scratch pads will automatically clear their text after copying the last block.
+    /// If true, the editor will automatically clear text after copying the last block.
     /// </summary>
     public bool AutomaticallyClearAfterLastCopy { get; set; } = false;
 
     /// <summary>
-    /// Maximum length of input on ScratchPads
+    /// Maximum length of input in the text editor
     /// </summary>
-    public int ScratchPadMaximumTextLength { get; set; } = 4096;
+    public int TextEditorMaximumLength { get; set; } = 4096;
 
     /// <summary>
     /// Automatically replace double spaces in the text.
     /// </summary>
     public bool ReplaceDoubleSpaces { get; set; } = true;
 
-    /// <summary>
-    /// When true Scratch Pads will attempt to parse the header from the chat.
-    /// </summary>
-    public bool ParseHeaderInput { get; set; } = true;
 
     /// <summary>
     /// A dictionary containing the different colors for chat headers.
@@ -151,14 +132,14 @@ public sealed class Configuration : IPluginConfiguration
 
 
     /// <summary>
-    /// The limit to the history size that <see cref="Gui.ScratchPadUI"/> keeps.
+    /// The limit to the history size that the text editor keeps.
     /// </summary>
-    public int ScratchPadHistoryLimit { get; set; } = 5;
+    public int TextEditorHistoryLimit { get; set; } = 5;
 
     /// <summary>
-    /// The upper limit to the size of the input in a <see cref="Gui.ScratchPadUI"/>
+    /// The upper limit to the size of the input in the text editor
     /// </summary>
-    public int ScratchPadInputLineHeight { get; set; } = 5;
+    public int TextEditorInputLineHeight { get; set; } = 5;
     #endregion
 
     #region Spell Checker Settings
@@ -188,14 +169,10 @@ public sealed class Configuration : IPluginConfiguration
     /// </summary>
     public int MaximumSuggestions { get; set; } = 5;
 
-    /// <summary>
-    /// Enables automatic spell checking when <see langword="true"/>
-    /// </summary>
-    public bool AutoSpellCheck { get; set; } = true;
 
     /// <summary>
     /// The <see cref="float"/> delay between when the user stops typing and
-    /// when the <see cref="Gui.ScratchPadUI"/> runs the spell check.
+    /// when the text editor runs the spell check.
     /// </summary>
     public float AutoSpellCheckDelay { get; set; } = 1f;
     #endregion

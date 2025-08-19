@@ -33,7 +33,11 @@ internal sealed class ThesaurusAPI : IDisposable
     public ThesaurusAPI()
     {
         _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
+        // Only add API key header if it's not empty
+        if (!string.IsNullOrWhiteSpace(EorzeanScribe.Configuration.ThesaurusApiKey))
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
+        }
         State = ApiState.Idle;
     }
 
@@ -46,7 +50,14 @@ internal sealed class ThesaurusAPI : IDisposable
             errorEntry.Word = "No API key configured. Please add your API Ninjas key in settings.";
             noKeyResult.AddEntry(errorEntry);
             _history.Insert(0, noKeyResult);
+            State = ApiState.Failed;
             return noKeyResult;
+        }
+        
+        // Update API key header if it was added after construction
+        if (!_httpClient.DefaultRequestHeaders.Contains("X-Api-Key"))
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
         }
 
         Loading = true;
@@ -124,7 +135,23 @@ internal sealed class ThesaurusAPI : IDisposable
 
     public async void SearchThesaurus(string word)
     {
-        await SearchAsync(word);
+        try
+        {
+            await SearchAsync(word);
+        }
+        catch (Exception ex)
+        {
+            EorzeanScribe.PluginLog.Error($"Thesaurus search failed: {ex.Message}");
+            State = ApiState.Failed;
+            Loading = false;
+            
+            // Add error to history
+            var errorResult = new WordSearchResult(word);
+            var errorEntry = new ThesaurusEntry();
+            errorEntry.Word = $"Search failed: {ex.Message}";
+            errorResult.AddEntry(errorEntry);
+            _history.Insert(0, errorResult);
+        }
     }
 
     public void Dispose()

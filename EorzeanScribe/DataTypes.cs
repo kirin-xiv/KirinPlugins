@@ -187,9 +187,7 @@ internal sealed class Clock
     internal float Delta { get; private set; }
 
     /// <summary>
-    /// The longest recorded <see cref="Delta"/> since the
     /// </summary>
-    internal float LongestFrame { get; private set; }
     public Clock()
     {
         this._lastTick = DateTime.UtcNow;
@@ -208,20 +206,11 @@ internal sealed class Clock
         // Compare that the last tick to find the difference and convert it to seconds.
         float delta = (tick.Ticks - this._lastTick.Ticks) / TICKS_PER_SECOND;
 
-        // If the delta is longer than any others and this is not the first tick then
-        // apply this to the longest frame.
-        if ( delta > this.LongestFrame && _lastTick > DateTime.MinValue)
-            this.LongestFrame = delta;
-
         // Set Delta and _lastTick
         this.Delta = delta;
         this._lastTick = tick;
     }
 
-    /// <summary>
-    /// Sets <see cref="LongestFrame"/> to the current Delta.
-    /// </summary>
-    internal void ResetLongest() => this.LongestFrame = this.Delta;
 }
 
 internal sealed class HeaderData
@@ -385,18 +374,18 @@ internal sealed class HeaderData
 }
 
 /// <summary>
-/// A class used for comparing the states of a <see cref="ScratchPadUI"/>
+/// A class used for comparing the states of the text editor
 /// </summary>
 internal sealed class PadState
 {
     /// <summary>
-    /// The <see cref="string"/> of the <see cref="ScratchPadUI"/>
+    /// The text content of the editor
     /// </summary>
     internal string ScratchText;
 
 
     /// <summary>
-    /// The <see cref="HeaderData"/> that is/was used by the <see cref="ScratchPadUI"/>
+    /// The header data used by the text editor
     /// </summary>
     internal HeaderData? Header = null;
 
@@ -754,7 +743,14 @@ internal sealed class Word
         bw.DoWork += ( s, e ) => { e.Result = Helpers.Lang.GetSuggestions( wordText ); };
         bw.RunWorkerCompleted += ( s, e ) => { 
             this.GeneratingSuggestions = false;
-            if ( e.Result is not null ) 
+            
+            // Check for errors first before accessing Result
+            if ( e.Error != null )
+            {
+                EorzeanScribe.PluginLog.Error($"Error generating suggestions: {e.Error.Message}");
+                this.Suggestions = new(); // Empty list on error
+            }
+            else if ( e.Result is not null ) 
                 this.Suggestions = (List<string>)e.Result;
             else 
                 this.Suggestions = new(); // Empty list if generation failed

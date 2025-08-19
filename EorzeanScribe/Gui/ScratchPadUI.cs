@@ -11,13 +11,8 @@ namespace EorzeanScribe.Gui;
 internal sealed class ScratchPadUI : Window
 {
     #region Constants
-    internal const int CORRECTIONS_FOUND = -1;
-    internal const int CHECKING_SPELLING = 1;
-    internal const int CORRECTIONS_NOT_FOUND = 2;
-    internal const int EDITING_TEXT = 0;
     internal const int VIEW_MODE_PAD = 0;
     internal const int VIEW_MODE_HISTORY = 1;
-    internal const int VIEW_MODE_STATS = 2;
     #endregion
 
     #region Identity
@@ -34,7 +29,6 @@ internal sealed class ScratchPadUI : Window
     #endregion
 
     #region Chat Header
-    private bool _header_parse = EorzeanScribe.Configuration.ParseHeaderInput;
     private HeaderData _header = new(true);
     public HeaderData Header => this._header;
     #endregion
@@ -68,9 +62,6 @@ internal sealed class ScratchPadUI : Window
 
     #region History
     private List<PadState> _text_history = new();
-    private StatisticsTracker _statisticsTracker = new();
-
-    private string _stats_order_by = "usesdescending";
     #endregion
 
     #region Spell Check
@@ -82,7 +73,6 @@ internal sealed class ScratchPadUI : Window
     #endregion
 
     #region Window State
-    private bool _hideOnly = false;
     private float _lastWidth = 0;
     private float _lastScale = ImGuiHelpers.GlobalScale;
     
@@ -157,8 +147,8 @@ internal sealed class ScratchPadUI : Window
     #endregion
 
     #region Construction & Destruction
-    internal static string CreateWindowName( int id ) => $"{EorzeanScribe.APPNAME} - Scratch Pad #{id}";
-    internal static string CreateWindowName( string str ) => $"{EorzeanScribe.APPNAME} - Scratch Pad: {str.Replace( "%", "%%" )}";
+    internal static string CreateWindowName( int id ) => $"{EorzeanScribe.APPNAME}";
+    internal static string CreateWindowName( string str ) => $"{EorzeanScribe.APPNAME}";
 
     /// <summary>
     /// Initializes a new <see cref="ScratchPadUI"/> object with a fixed ID.
@@ -198,20 +188,6 @@ internal sealed class ScratchPadUI : Window
         this.Title = name;
     }
 
-    private void DoClose()
-    {
-        // To prevent the window from being created repeatedly
-        // ensure that the dialog is not already open.
-        EorzeanScribeUI.ShowMessageBox(
-            "Confirm Delete",
-            $"Are you sure you want to delete Scratch Pad {this.ID}?\r\n(Cancel will close without deleting.)",
-            MessageBox.ButtonStyle.OkCancel,
-            ( mb ) =>
-            {
-                if( ( mb.Result & MessageBox.DialogResult.Ok ) == MessageBox.DialogResult.Ok )
-                    EorzeanScribeUI.RemoveWindow( this );
-            } );
-    }
     #endregion
 
     private int _view_mode = VIEW_MODE_PAD;
@@ -253,11 +229,6 @@ internal sealed class ScratchPadUI : Window
             DrawHistory();
             DrawHistoryFooter();
         }
-        else if ( this._view_mode == VIEW_MODE_STATS )
-        {
-            DrawStats();
-            DrawStatsFooter();
-        }
 
         // Update the last scale used. This will be used to recalculate
         // the size of text if necessary.
@@ -265,23 +236,12 @@ internal sealed class ScratchPadUI : Window
     }
 
     /// <summary>
-    /// Handles automatically deleting the pad if configured to do so.
+    /// Called when the window is closed - content persists.
     /// </summary>
     public override void OnClose()
     {
-        // If automatically deleting closed pads and we're not just hiding it
-        if ( EorzeanScribe.Configuration.DeleteClosedScratchPads && !this._hideOnly )
-        {
-            // If confirmation required then launch a confirmation dialog
-            if ( EorzeanScribe.Configuration.ConfirmDeleteClosePads)
-                DoClose();
-
-            else // No confirmation required, just delete.
-                EorzeanScribeUI.RemoveWindow( this );
-        }
-
-        // Always reset hide only.
-        this._hideOnly = false;
+        // Just close the window - content persists
+        // Window can be reopened with /es command
     }
 
     /// <summary>
@@ -318,7 +278,6 @@ internal sealed class ScratchPadUI : Window
             this._invalidateChunks = false;
         }
 
-        // If the configuration wasn't saved recently then check if spell check is required
         // Check if spell check is needed
         else if ( this._do_spell_check )
         {
@@ -342,80 +301,6 @@ internal sealed class ScratchPadUI : Window
         {
             try
             {
-
-                // Text menu
-                if ( ImGui.BeginMenu( $"Text##ScratchPad{this.ID}TextMenu" ) )
-                {
-                    #region Clear
-                    if ( !this._canUndo || this._text_history.Count == 0 )
-                    {
-                        // Show the clear text option.
-                        if ( ImGui.MenuItem( $"Clear##ScratchPad{this.ID}TextClearMenuItem" ) )
-                            DoClearText();
-                    }
-                    else
-                    {
-                        // Show the undo clear text option
-                        if ( ImGui.MenuItem( $"Undo Clear##ScratchPad{this.ID}TextUndoClearMenuItem" ) )
-                            UndoClearText();
-                    }
-                    #endregion
-
-                    // Spell Check
-                    if ( ImGui.MenuItem( $"Spell Check##ScratchPad{this.ID}SpellCheckMenuItem", this.ScratchString.Length > 0 ) )
-                        DoSpellCheck();
-
-                    #region Chunks
-                    bool bNoChunks = this._chunks.Count == 0;
-                    if ( bNoChunks )
-                        ImGui.BeginDisabled();
-
-                    // Create a chunk menu and create a copy button for each chunk.
-                    if ( ImGui.BeginMenu( $"Chunks##ScratchPad{this.ID}ChunksMenu" ) )
-                    {
-                        for ( int i = 0; i < this._chunks.Count; ++i )
-                            if ( ImGui.MenuItem( $"Copy Chunk {i + 1}##ScratchPad{this.ID}ChunkMenuItem{i}" ) )
-                                ImGui.SetClipboardText( CreateCompleteTextChunk( this._chunks[i], i, this._chunks.Count ) );
-
-                        // End chunk menu
-                        ImGui.EndMenu();
-                    }
-
-                    if ( bNoChunks )
-                        ImGui.EndDisabled();
-                    #endregion
-
-                    #region History
-                    // View/Close history
-                    if ( this._view_mode != VIEW_MODE_HISTORY )
-                    {
-                        if ( ImGui.MenuItem( $"View History##ScratchPad{this.ID}MenuItem" ) )
-                            this._view_mode = VIEW_MODE_HISTORY;
-                    }
-                    else
-                    {
-                        if ( ImGui.MenuItem( $"Close History##ScratchPad{this.ID}MenuItem" ) )
-                            this._view_mode = VIEW_MODE_PAD;
-                    }
-                    #endregion
-                    #region Statistics
-                    // TODO Configuration track word statistics
-                    if ( this._view_mode != VIEW_MODE_STATS )
-                    {
-                        if ( ImGui.MenuItem( $"Word Statistics##ScratchPad{this.ID}MenuItem" ) )
-                            this._view_mode = VIEW_MODE_STATS;
-                    }
-                    else
-                    {
-                        if ( ImGui.MenuItem( $"Close Statistics##ScratchPad{this.ID}MenuItem" ) )
-                            this._view_mode = VIEW_MODE_PAD;
-                    }
-                    #endregion
-
-                    // End Text menu
-                    ImGui.EndMenu();
-                }
-
                 // Thesaurus menu item
                 // For the time being, the thesaurus is disabled.
                 if ( ImGui.MenuItem( $"Thesaurus##ScratchPad{this.ID}ThesaurusMenu" ) )
@@ -425,8 +310,8 @@ internal sealed class ScratchPadUI : Window
                 if ( ImGui.MenuItem( $"Settings##ScratchPad{this.ID}SettingsMenu" ) )
                     EorzeanScribeUI.ShowSettings();
 
-                // Help menu item
-                if ( ImGui.MenuItem( $"Help##ScratchPad{this.ID}HelpMenu" ) )
+                // How-to menu item
+                if ( ImGui.MenuItem( $"How-to##ScratchPad{this.ID}HowtoMenu" ) )
                     EorzeanScribeUI.ShowScratchPadHelp();
 
             }
@@ -441,29 +326,20 @@ internal sealed class ScratchPadUI : Window
     private void DrawHeader()
     {
         // Set the column count.
-        int default_columns = 2;
+        int default_columns = 1;
         int columns = default_columns;
 
-        // If using Tell or Linkshells, we need 3 columns
+        // If using Tell or Linkshells, we need an extra column
         if ( this._header.ChatType == ChatType.Tell || this._header.ChatType == ChatType.Linkshell )
             ++columns;
 
         if ( ImGui.BeginTable( $"##ScratchPad{this.ID}HeaderTable", columns ) )
         {
-            // Setup the header lock and chat mode columns.
-            ImGui.TableSetupColumn( $"Scratchpad{this.ID}HeaderLockColumn", ImGuiTableColumnFlags.WidthFixed, EorzeanScribe.BUTTON_Y.Scale() );
-
             // If there is an extra column, insert it here.
             if ( columns > default_columns )
                 ImGui.TableSetupColumn( $"Scratchpad{this.ID}ExtraColumn", ImGuiTableColumnFlags.WidthFixed, 90 * ImGuiHelpers.GlobalScale );
 
             ImGui.TableSetupColumn( $"ScratchPad{this.ID}MiddleColumn", ImGuiTableColumnFlags.WidthStretch, 2 );
-
-            // Header parse lock
-            ImGui.TableNextColumn();
-            if ( Dalamud.Interface.Components.ImGuiComponents.IconButton( this._header_parse ? FontAwesomeIcon.LockOpen : FontAwesomeIcon.Lock ) )
-                this._header_parse = !this._header_parse;
-            ImGuiExt.SetHoveredTooltip( $"{(this._header_parse ? "Locks" : "Unlocks")} header parsing on this pad." );
 
             #region Header Selection
             // Get the header options.
@@ -529,10 +405,15 @@ internal sealed class ScratchPadUI : Window
         Vector2 vCursorPos = ImGui.GetCursorPos();
         float fFooterHeight = GetFooterHeight();
         float size_y = vRegionMax.Y - vCursorPos.Y - fFooterHeight;
-        if ( size_y < 1 )
-            return;
+        
+        // Ensure minimum height for chunk display area to prevent UI controls from disappearing
+        // This allows scrolling when there are many chunks
+        const float MIN_CHUNK_AREA_HEIGHT = 100f;
+        if ( size_y < MIN_CHUNK_AREA_HEIGHT )
+            size_y = MIN_CHUNK_AREA_HEIGHT;
 
-        if ( ImGui.BeginChild( $"{EorzeanScribe.APPNAME}##ScratchPad{this.ID}ChildFrame", new( -1, size_y ) ) )
+        // Add scrolling flag to handle overflow when there are many chunks
+        if ( ImGui.BeginChild( $"{EorzeanScribe.APPNAME}##ScratchPad{this.ID}ChildFrame", new( -1, size_y ), false, ImGuiWindowFlags.AlwaysVerticalScrollbar ) )
         {
             // If the chunk data is null we abort the draw call and end the child.
             if ( this._chunks is null )
@@ -586,9 +467,6 @@ internal sealed class ScratchPadUI : Window
                     if ( ImGui.Button( $"{copyButtonText}##Chunk{i}Copy", new( buttonWidth, 0 ) ) )
                     {
                         ImGui.SetClipboardText( CreateCompleteTextChunk( this._chunks[i], i, this._chunks.Count ) );
-                        // Add to statistics if enabled
-                        if ( EorzeanScribe.Configuration.TrackWordStatistics )
-                            this._statisticsTracker.AddChunk( this._chunks[i] );
                         // Set this as the currently copied chunk (replaces any previous)
                         _currentlyCopiedChunk = i;
                     }
@@ -785,7 +663,7 @@ internal sealed class ScratchPadUI : Window
         string scratch = this.ScratchString;
         
         // Convert to byte buffer for new API
-        var buffer = System.Text.Encoding.UTF8.GetBytes(scratch + new string('\0', EorzeanScribe.Configuration.ScratchPadMaximumTextLength - scratch.Length));
+        var buffer = System.Text.Encoding.UTF8.GetBytes(scratch + new string('\0', EorzeanScribe.Configuration.TextEditorMaximumLength - scratch.Length));
         var span = new Span<byte>(buffer);
 
         // Enable word wrapping in multiline text input
@@ -1045,32 +923,10 @@ internal sealed class ScratchPadUI : Window
     {
         ImGuiStylePtr style = ImGui.GetStyle();
 
-        // Only draw Clear button and optionally Spell Check button
-        // Give Clear button a reasonable fixed width instead of taking up the whole space
+        // Only draw Clear button
         float clearButtonWidth = 100 * ImGuiHelpers.GlobalScale;
         
         DrawClearButton( clearButtonWidth );
-
-        // If automatic spellcheck is disabled, show spell check button
-        if ( !EorzeanScribe.Configuration.AutoSpellCheck )
-        {
-            ImGui.SameLine();
-            float spellCheckButtonWidth = 120 * ImGuiHelpers.GlobalScale;
-            DrawSpellcheckButton( spellCheckButtonWidth );
-        }
-
-        // If not configured to automatically delete scratch pads, draw the delete button.
-        if ( !EorzeanScribe.Configuration.DeleteClosedScratchPads )
-        {
-            if ( ImGui.Button( $"Delete Pad##Scratch{this.ID}", ImGuiHelpers.ScaledVector2( -1, EorzeanScribe.BUTTON_Y ) ) )
-            {
-                if ( EorzeanScribe.Configuration.ConfirmDeleteClosePads )
-                    DoClose();
-
-                else
-                    EorzeanScribeUI.RemoveWindow( this );
-            }
-        }
     }
 
     /// <summary>
@@ -1100,29 +956,6 @@ internal sealed class ScratchPadUI : Window
         }
     }
 
-    /// <summary>
-    /// Draws the spell check button
-    /// </summary>
-    /// <param name="width"></param>
-    private void DrawSpellcheckButton( float width )
-    {
-        // If spell check is disabled, make the button dark so it appears as though it is disabled.
-        if ( !Lang.Enabled )
-            ImGui.PushStyleVar( ImGuiStyleVar.Alpha, ImGui.GetStyle().Alpha * 0.5f );
-
-        if ( this.ScratchString.Length == 0 )
-            ImGui.BeginDisabled();
-
-        if ( ImGui.Button( $"Spell Check##Scratch{this.ID}", new( width, EorzeanScribe.BUTTON_Y.Scale() ) ) )
-            DoSpellCheck();
-
-        if ( this.ScratchString.Length == 0 )
-            ImGui.EndDisabled();
-
-        // If spell check is disabled, pop the stylevar to return to normal.
-        if ( !Lang.Enabled )
-            ImGui.PopStyleVar();
-    }
     #endregion
 
     #region History
@@ -1301,7 +1134,7 @@ internal sealed class ScratchPadUI : Window
             }
 
             // If there are too many history states, remove the extra(s).
-            int count = this._text_history.Count - EorzeanScribe.Configuration.ScratchPadHistoryLimit;
+            int count = this._text_history.Count - EorzeanScribe.Configuration.TextEditorHistoryLimit;
             for ( int i = 0; i < count; i++ )
                 this._text_history.RemoveAt( 0 );
         }
@@ -1309,79 +1142,6 @@ internal sealed class ScratchPadUI : Window
     }
     #endregion
 
-    #region Stats
-    /// <summary>
-    /// Draws the user's word usage statistics
-    /// </summary>
-    private void DrawStats()
-    {
-        Vector2 contentRegion = ImGui.GetContentRegionMax();
-        contentRegion.Y -= ImGui.GetCursorPosY() + GetFooterHeight();
-        if ( ImGui.BeginChild( $"HistoryChild", contentRegion ) )
-        {
-            ImGui.TextWrapped( $"The following is a list of all words used in this scratch pad. Note that this list is only words that were copied to the clipboard." );
-            // Display the stats as a table
-            if ( ImGui.BeginTable( $"StatsTable{this.ID}", 2 ) )
-            {
-                ImGui.TableSetupColumn( $"StatsTableWordCol", ImGuiTableColumnFlags.WidthStretch );
-                ImGui.TableSetupColumn( $"StatsTableUsesCol", ImGuiTableColumnFlags.WidthStretch );
-
-                bool word = this._stats_order_by.StartsWith("word");
-                bool desc = this._stats_order_by.EndsWith("descending");
-
-                ImGui.TableNextColumn();
-                ImGui.TableHeader( $"Word {(word ? (desc ? "↓" : "↑") : "")}" );
-                if ( ImGui.IsItemClicked() )
-                {
-                    if ( this._stats_order_by == "word" )
-                        this._stats_order_by = "worddescending";
-                    else
-                        this._stats_order_by = "word";
-                }
-
-                ImGui.TableNextColumn();
-                ImGui.TableHeader( $"Uses {(!word ? (desc ? "↓" : "↑") : "")}" );
-                if ( ImGui.IsItemClicked() )
-                {
-                    if ( this._stats_order_by == "usesdescending" )
-                        this._stats_order_by = "uses";
-                    else
-                        this._stats_order_by = "usesdescending";
-                }
-
-                List<KeyValuePair<string, int>> wordUses = word
-                    ? this._statisticsTracker.ListWordsByWord( desc )
-                    : this._statisticsTracker.ListWordsByCount( desc );
-
-                foreach ( KeyValuePair<string, int> kvp in wordUses )
-                {
-                    ImGui.TableNextColumn();
-                    ImGui.Text( $"{kvp.Key}" );
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text( $"{kvp.Value}" );
-                }
-
-                ImGui.EndTable();
-            }
-            ImGui.EndChild();
-        }
-    }
-
-    /// <summary>
-    /// Draws the footer for the statistics view.
-    /// </summary>
-    private void DrawStatsFooter()
-    {
-        if ( ImGui.Button( $"Clear Statistics##{this.ID}ClearStatisticsButton", new( ImGui.GetWindowContentRegionMax().X - ImGui.GetStyle().FramePadding.X * 2, EorzeanScribe.BUTTON_Y.Scale() ) ) )
-        {
-            this._statisticsTracker.Clear();
-            this._view_mode = VIEW_MODE_PAD;
-        }
-        if ( ImGui.Button( $"Close##{this.ID}closehistorybutton", new( ImGui.GetWindowContentRegionMax().X - ImGui.GetStyle().FramePadding.X * 2, EorzeanScribe.BUTTON_Y.Scale() ) ) )
-            this._view_mode = VIEW_MODE_PAD;
-    }
-    #endregion
 
     #region Button Backend
     /// <summary>
@@ -1398,9 +1158,6 @@ internal sealed class ScratchPadUI : Window
             // Copy the next chunk over.
             ImGui.SetClipboardText( CreateCompleteTextChunk( this._chunks[this._nextChunk], this._nextChunk, this._chunks.Count ) );
 
-            // Add the text to the tracker if tracking enabled.
-            if ( EorzeanScribe.Configuration.TrackWordStatistics )
-                this._statisticsTracker.AddChunk( this._chunks[this._nextChunk] );
 
             this._nextChunk++;
 
@@ -1475,7 +1232,7 @@ internal sealed class ScratchPadUI : Window
     /// <summary>
     /// Checks the current scratch text for spelling errors.
     /// </summary>
-    private void DoSpellCheck()
+    private void DoSpellCheck(bool forceCheck = false)
     {
         try
         {
@@ -1484,8 +1241,8 @@ internal sealed class ScratchPadUI : Window
 
             string currentText = this.ScratchString.Unwrap();
             
-            // Skip spell-check if text hasn't changed since last check
-            if (currentText == _lastSpellCheckedText)
+            // Skip spell-check if text hasn't changed since last check (unless forced)
+            if (!forceCheck && currentText == _lastSpellCheckedText)
                 return;
 
             // Remember the old count to avoid flashing
@@ -1619,8 +1376,6 @@ internal sealed class ScratchPadUI : Window
                 // Clear out replacement text.
                 this._replaceText = "";
 
-                int ignore = -1;
-                newScratch = CheckForHeader( newScratch, ref ignore );
 
                 // Rewrap the text string.
                 // Rewrap scratch
@@ -1706,13 +1461,9 @@ internal sealed class ScratchPadUI : Window
             _currentlyCopiedChunk = null; // Reset copied state
             _postedChunks.Clear(); // Clear posted state when text changes
 
-            // Don't clear corrections immediately - let them persist until new spell-check completes
-            // This prevents flashing of the spell-check dialog while typing
-            if ( EorzeanScribe.Configuration.AutoSpellCheck )
-            {
-                this._rest_time = EorzeanScribe.Configuration.AutoSpellCheckDelay;
-                this._do_spell_check = true;
-            }
+            // Schedule spell check after text changes
+            this._rest_time = EorzeanScribe.Configuration.AutoSpellCheckDelay;
+            this._do_spell_check = true;
         }
         catch ( Exception e ) { DumpError( e ); }
     }
@@ -1751,9 +1502,6 @@ internal sealed class ScratchPadUI : Window
 
             int pos = data->CursorPos;
 
-            // Check for header input.
-            if ( _header_parse )
-                txt = CheckForHeader( txt, ref pos );
 
             // Wrap the string if there is enough there.
             if ( txt.Length > 0 )
@@ -1824,38 +1572,6 @@ internal sealed class ScratchPadUI : Window
         }
     }
 
-    /// <summary>
-    /// Check for a chat header at the start of a string.
-    /// </summary>
-    /// <param name="text">Text to parse from</param>
-    /// <param name="cursorPos">Cursor position</param>
-    /// <returns>The text string with header removed.</returns>
-    private string CheckForHeader( string text, ref int cursorPos )
-    {
-        // The text must have a length and must start with a slash. If
-        // there is no slash, it is impossible to contain a header.
-        if ( text.Length > 1 )
-        {
-            // Default to ChatType None
-            HeaderData headerData = new(text);
-
-            // If the header data was not validated return to avoid
-            // the rest of the checks.
-            if ( !headerData.Valid )
-                return text;
-
-            //If a chat header was found
-            int len = headerData.Length;
-            if ( headerData.ChatType != ChatType.None && cursorPos >= len )
-            {
-                this._header = headerData;
-
-                text = text.Remove( 0, len + 1 );
-                cursorPos -= len + 1;
-            }
-        }
-        return text;
-    }
 
     /// <summary>
     /// Assembles the chunk into a usable string.
@@ -1913,7 +1629,7 @@ internal sealed class ScratchPadUI : Window
                 { "Error", e.ToString() },
                 { "Message", e.Message }
             };
-        dump["Window"] = $"ScratchPadUI #{this.ID}";
+        dump["Window"] = $"EorzeanScribe #{this.ID}";
         EorzeanScribeUI.ShowErrorWindow( dump );
     }
 
@@ -1926,7 +1642,7 @@ internal sealed class ScratchPadUI : Window
     /// Returns the default height of the text input.
     /// </summary>
     /// <returns></returns>
-    private static float GetDefaultInputHeight() => EorzeanScribe.Configuration.ScratchPadInputLineHeight * EorzeanScribeUI.LineHeight;
+    private static float GetDefaultInputHeight() => EorzeanScribe.Configuration.TextEditorInputLineHeight * EorzeanScribeUI.LineHeight;
 
     /// <summary>
     /// Gets the height of the footer.
@@ -1940,13 +1656,6 @@ internal sealed class ScratchPadUI : Window
             // Text input size can either be given or calculated.
             float result = inputSize > 0 ? inputSize : GetDefaultInputHeight();
             int paddingCount = 2;
-
-            // Delete pad button
-            if ( !EorzeanScribe.Configuration.DeleteClosedScratchPads )
-            {
-                result += EorzeanScribe.BUTTON_Y.Scale();
-                paddingCount++;
-            }
 
             // Replace Text section
             if ( this._corrections.Count > 0 )
@@ -1982,18 +1691,15 @@ internal sealed class ScratchPadUI : Window
         }
         else if ( this._view_mode == VIEW_MODE_HISTORY )
             return EorzeanScribe.BUTTON_Y.Scale() + ImGui.GetStyle().FramePadding.Y;
-        else if ( this._view_mode == VIEW_MODE_STATS )
-            return (EorzeanScribe.BUTTON_Y.Scale() + ImGui.GetStyle().FramePadding.Y) * 2;
 
         return 0;
     }
 
     /// <summary>
-    /// Hides the window without deleting. Ignores automatic deletion.
+    /// Hides the window (content persists).
     /// </summary>
     internal void Hide()
     {
-        this._hideOnly = true;
         this.IsOpen = false;
     }
 
@@ -2037,9 +1743,6 @@ internal sealed class ScratchPadUI : Window
             // Send the message using ECommons Chat.SendMessage
             Chat.SendMessage(completeText);
             
-            // Add the text to statistics tracker if enabled
-            if (EorzeanScribe.Configuration.TrackWordStatistics)
-                this._statisticsTracker.AddChunk(chunk);
             
             // Show success notification
             EorzeanScribe.NotificationManager.AddNotification(new()

@@ -302,33 +302,43 @@ public static class Lang
 
         void AddResults(Task<List<string>> t)
         {
-            int index = 0;
-            EorzeanScribe.PluginLog.Debug($"AddResults called with {t.Result.Count} candidates");
-            while ( results.Count <= EorzeanScribe.Configuration.MaximumSuggestions && index < t.Result.Count && isWord( t.Result[index] ) )
+            // Check if task completed successfully before accessing Result
+            if (t.IsFaulted || t.IsCanceled)
             {
-                EorzeanScribe.PluginLog.Debug($"Adding valid suggestion: '{t.Result[index]}'");
-                results.Add( t.Result[index++] );
+                EorzeanScribe.PluginLog.Error($"Task failed: {t.Exception?.GetBaseException()?.Message ?? "Unknown error"}");
+                return;
+            }
+            
+            int index = 0;
+            var taskResult = t.Result;
+            if (taskResult == null || taskResult.Count == 0) return;
+            
+            EorzeanScribe.PluginLog.Debug($"AddResults called with {taskResult.Count} candidates");
+            while ( results.Count <= EorzeanScribe.Configuration.MaximumSuggestions && index < taskResult.Count && isWord( taskResult[index] ) )
+            {
+                EorzeanScribe.PluginLog.Debug($"Adding valid suggestion: '{taskResult[index]}'");
+                results.Add( taskResult[index++] );
             }
             // Log some rejected candidates for debugging
-            for (int i = index; i < Math.Min(index + 5, t.Result.Count); i++)
+            for (int i = index; i < Math.Min(index + 5, taskResult.Count); i++)
             {
-                EorzeanScribe.PluginLog.Debug($"Rejected candidate: '{t.Result[i]}' (isWord: {isWord(t.Result[i])})");
+                EorzeanScribe.PluginLog.Debug($"Rejected candidate: '{taskResult[i]}' (isWord: {isWord(taskResult[i])})");
             }
         }
         // Collect the transposes.
-        transpose.Wait();
+        try { transpose.Wait(); } catch (Exception ex) { EorzeanScribe.PluginLog.Error($"Transpose task failed: {ex.Message}"); }
         AddResults( transpose );
 
         // Collect the aways.
-        aways.Wait();
+        try { aways.Wait(); } catch (Exception ex) { EorzeanScribe.PluginLog.Error($"Aways task failed: {ex.Message}"); }
         AddResults( aways );
 
         // Collect the splits.
-        splits.Wait();
+        try { splits.Wait(); } catch (Exception ex) { EorzeanScribe.PluginLog.Error($"Splits task failed: {ex.Message}"); }
         AddResults( splits );
 
         // Collect the deleted characters.
-        deletes.Wait();
+        try { deletes.Wait(); } catch (Exception ex) { EorzeanScribe.PluginLog.Error($"Deletes task failed: {ex.Message}"); }
         AddResults( deletes );
 
         EorzeanScribe.PluginLog.Debug($"GetSuggestions (algorithmic) returning {results.Count} suggestions for '{word}': [{string.Join(", ", results)}]");
