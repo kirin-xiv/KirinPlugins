@@ -21,13 +21,29 @@ https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/pluginmaster.json
 ### 🎭 Truth or Dare (FFToD)
 **Version:** 2.0.0.0  
 **Type:** Original Plugin  
-**Description:** Truth or Dare mini-game automation plugin for FFXIV  
-**Features:**
-- Automated party game management
-- Smart tiebreaker system
-- Prevents repeat winners
-- Chat integration with copy/paste output
-- Debug mode for testing
+**Description:** **FULLY AUTOMATED** Truth or Dare mini-game plugin for FFXIV  
+
+✨ **NEW: Complete Automation!**
+- 🎯 **One-click operation** - Just click "Start Game"
+- 📢 **Auto-posts rules to /shout** with proper timing
+- ⏱️ **Handles countdown** (3, 2, 1, Go!) with 2-second delays
+- 🎲 **Collects rolls automatically** after "Go!" is posted
+- 🏆 **Auto-posts results to /yell** when rolls close
+- 📝 **Copy Results button** for manual clipboard access (if needed)
+
+⚙️ **Customizable Settings:**
+- 🌐 **Custom Discord/Wi-Fi message** - Set your own community link
+- 🔧 **Easy settings access** via gear icon in title bar
+- 🎛️ **Toggle automation features** on/off as needed
+
+🧠 **Smart Features:**
+- 🚫 **Prevents repeat winners** (respects last winner logic)
+- 🎯 **Smart tiebreaker system** (first roller wins ties)
+- 🎭 **Stripper detection** (rolls ≤100 automatically identified)
+- 🔄 **Pass to Next Winner** functionality
+- 🧪 **Debug mode** for testing
+
+**Maximum laziness achieved!** No more copy/pasting or manual chat commands.
 
 ### 🎲 Spamroll Giveaway
 **Version:** 2.2.0.0  
@@ -40,6 +56,27 @@ https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/pluginmaster.json
 - Echo/Say/Party/Yell/Shout channel support
 - Anti-spam protection
 
+
+### ✍️ EorzeanScribe (Beta)
+**Version:** 1.6.5.0  
+**Type:** Original Plugin  
+**Description:** Comprehensive writing assistant for FFXIV roleplayers  
+
+📝 **Enhanced Writing Features:**
+- 📖 **Smart text segmentation** for long posts
+- 🔤 **Real-time spell checking** with custom dictionary
+- 📚 **Integrated thesaurus** for better vocabulary
+- 📤 **Post to Chat** - Send segments directly to game chat
+- 📋 **Copy segments** to clipboard
+- ⚙️ **Configurable text editor** with 16K character limit
+
+🎯 **Roleplay-Focused:**
+- 🎭 **Automatic chat formatting** for seamless in-game posting
+- 📊 **Statistics tracking** for your writing habits
+- 🔧 **Advanced editing tools** for enhanced roleplay experience
+- 🎨 **Customizable UI** with theme support
+
+**Perfect for roleplayers who want polished, error-free writing!**
 
 ### 🛏️ Doze Anywhere
 **Version:** 0.2.2.6  
