@@ -21,6 +21,7 @@ internal sealed class SettingsUI : Window
     // General settings. 
     private int _searchHistoryCountChange = EorzeanScribe.Configuration.SearchHistoryCount;
     private bool _confirmPublicChannels = EorzeanScribe.Configuration.ConfirmPublicChannels;
+    private int _textEditorMaxLength = EorzeanScribe.Configuration.TextEditorMaximumLength;
 
 
     // Spellcheck Settings
@@ -107,6 +108,10 @@ internal sealed class SettingsUI : Window
                 ImGui.SetNextItemWidth( ImGui.GetContentRegionMax().X - this._style.WindowPadding.X - ImGui.CalcTextSize("Thesaurus History Size").X );
                 ImGui.DragInt( "Thesaurus History Size", ref this._searchHistoryCountChange, 1, 1, 100 );
                 ImGuiExt.SetHoveredTooltip( "This is the number of searches to keep in memory at one time. Setting to 0 is unlimited.\nNote: The more you keep, them more memory used." );
+
+                ImGui.SetNextItemWidth( ImGui.GetContentRegionMax().X - this._style.WindowPadding.X - ImGui.CalcTextSize("Text Editor Max Length").X );
+                ImGui.DragInt( "Text Editor Max Length", ref this._textEditorMaxLength, 1024, 1024, 65536 );
+                ImGuiExt.SetHoveredTooltip( "Maximum number of characters allowed in the text editor. Increase this if you write very long posts.\nDefault: 16384 characters (about 30+ segments)" );
 
 
                 ImGui.EndChild();
@@ -417,6 +422,7 @@ internal sealed class SettingsUI : Window
         // General settings.
         this._searchHistoryCountChange = EorzeanScribe.Configuration.SearchHistoryCount;
         this._confirmPublicChannels = EorzeanScribe.Configuration.ConfirmPublicChannels;
+        this._textEditorMaxLength = EorzeanScribe.Configuration.TextEditorMaximumLength;
 
         // EorzeanScribe settings.
 
@@ -441,6 +447,7 @@ internal sealed class SettingsUI : Window
         // General Settings.
         EorzeanScribe.Configuration.SearchHistoryCount = this._searchHistoryCountChange;
         EorzeanScribe.Configuration.ConfirmPublicChannels = this._confirmPublicChannels;
+        EorzeanScribe.Configuration.TextEditorMaximumLength = this._textEditorMaxLength;
 
         // EorzeanScribe settings.
 

@@ -72,6 +72,7 @@ internal sealed class ScratchPadUI : Window
     private string _lastSpellCheckedText = "";
     #endregion
 
+
     #region Window State
     private float _lastWidth = 0;
     private float _lastScale = ImGuiHelpers.GlobalScale;
@@ -406,11 +407,24 @@ internal sealed class ScratchPadUI : Window
         float fFooterHeight = GetFooterHeight();
         float size_y = vRegionMax.Y - vCursorPos.Y - fFooterHeight;
         
-        // Ensure minimum height for chunk display area to prevent UI controls from disappearing
-        // This allows scrolling when there are many chunks
-        const float MIN_CHUNK_AREA_HEIGHT = 100f;
+        // Debug logging for height calculations
+        int chunkCount = this._chunks?.Count ?? 0;
+        if (chunkCount > 8) // Log when we have many segments
+        {
+            EorzeanScribe.PluginLog.Debug($"Segment Display - Segments: {chunkCount}, RegionMax.Y: {vRegionMax.Y}, CursorPos.Y: {vCursorPos.Y}, FooterHeight: {fFooterHeight}, Calculated size_y: {size_y}");
+        }
+        
+        // Ensure minimum height for segment display area to prevent UI controls from disappearing
+        // This allows scrolling when there are many segments
+        const float MIN_CHUNK_AREA_HEIGHT = 300f; // Increased from 200f to give more space
         if ( size_y < MIN_CHUNK_AREA_HEIGHT )
+        {
+            if (chunkCount > 8)
+            {
+                EorzeanScribe.PluginLog.Debug($"Applying minimum height: {MIN_CHUNK_AREA_HEIGHT} (was {size_y})");
+            }
             size_y = MIN_CHUNK_AREA_HEIGHT;
+        }
 
         // Add scrolling flag to handle overflow when there are many chunks
         if ( ImGui.BeginChild( $"{EorzeanScribe.APPNAME}##ScratchPad{this.ID}ChildFrame", new( -1, size_y ), false, ImGuiWindowFlags.AlwaysVerticalScrollbar ) )
@@ -452,7 +466,7 @@ internal sealed class ScratchPadUI : Window
                         ImGui.TextWrapped( CreateCompleteTextChunk( this._chunks[i], i, this._chunks.Count ) );
                     }
 
-                    // Add "Post to Chat" and "Copy" buttons for each chunk
+                    // Add "Post Segment" and "Copy" buttons for each segment
                     ImGui.Spacing();
                     float buttonWidth = 80 * ImGuiHelpers.GlobalScale;
                     
@@ -477,7 +491,7 @@ internal sealed class ScratchPadUI : Window
                     // Post to Chat button with permanent feedback
                     ImGui.SameLine();
                     bool wasPosted = _postedChunks.Contains(i);
-                    string postButtonText = wasPosted ? "Posted" : "Post to Chat";
+                    string postButtonText = wasPosted ? "Posted" : "Post Segment";
                     
                     // Color coding for post button
                     if (wasPosted)
@@ -663,14 +677,20 @@ internal sealed class ScratchPadUI : Window
         string scratch = this.ScratchString;
         
         // Convert to byte buffer for new API
-        var buffer = System.Text.Encoding.UTF8.GetBytes(scratch + new string('\0', EorzeanScribe.Configuration.TextEditorMaximumLength - scratch.Length));
+        // Ensure we don't create a negative-length string
+        int paddingLength = Math.Max(0, EorzeanScribe.Configuration.TextEditorMaximumLength - scratch.Length);
+        var buffer = System.Text.Encoding.UTF8.GetBytes(scratch + new string('\0', paddingLength));
         var span = new Span<byte>(buffer);
 
         // Enable word wrapping in multiline text input
-        if (ImGui.InputTextMultiline( $"##ScratchPad{this.ID}MultilineTextEntry",
+        bool textChanged = ImGui.InputTextMultiline( $"##ScratchPad{this.ID}MultilineTextEntry",
             span, 
             new System.Numerics.Vector2( -1, size_y ),
-            ImGuiInputTextFlags.None ))
+            ImGuiInputTextFlags.None );
+        
+        bool inputIsFocused = ImGui.IsItemFocused();
+        
+        if (textChanged)
         {
             // Convert back to string and update
             var nullIndex = Array.IndexOf(buffer, (byte)0);
@@ -680,8 +700,9 @@ internal sealed class ScratchPadUI : Window
             }
         }
 
+
         // This will fix Ctrl+C copy/paste.
-        if ( ImGui.IsItemFocused() && (ImGui.IsKeyDown( ImGuiKey.LeftCtrl ) || ImGui.IsKeyDown( ImGuiKey.RightCtrl )) && ImGui.IsKeyPressed( ImGuiKey.C ) )
+        if ( inputIsFocused && (ImGui.IsKeyDown( ImGuiKey.LeftCtrl ) || ImGui.IsKeyDown( ImGuiKey.RightCtrl )) && ImGui.IsKeyPressed( ImGuiKey.C ) )
         {
             string clipped = ImGui.GetClipboardText();
             clipped = clipped.Unwrap();
@@ -714,6 +735,7 @@ internal sealed class ScratchPadUI : Window
                 OnTextChanged();
             }
         }
+
     }
 
     /// <summary>
@@ -1453,6 +1475,7 @@ internal sealed class ScratchPadUI : Window
                 this._scratch = wrappedText; // Set internal field directly to avoid recursion
             }
 
+
             // Invalidate the chunks.
             this._invalidateChunks |= true;
             this._nextChunk = 0;
@@ -1716,6 +1739,7 @@ internal sealed class ScratchPadUI : Window
         // Exit history.
         this._view_mode = VIEW_MODE_PAD;
     }
+
     #endregion
 
     #region Chat Integration
@@ -1747,7 +1771,7 @@ internal sealed class ScratchPadUI : Window
             // Show success notification
             EorzeanScribe.NotificationManager.AddNotification(new()
             {
-                Content = $"Posted chunk {chunkIndex + 1}/{totalChunks} to chat!",
+                Content = $"Posted segment {chunkIndex + 1}/{totalChunks} to chat!",
                 Title = "EorzeanScribe",
                 Type = Dalamud.Interface.ImGuiNotification.NotificationType.Success
             });

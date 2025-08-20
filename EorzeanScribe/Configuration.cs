@@ -105,7 +105,7 @@ public sealed class Configuration : IPluginConfiguration
     /// <summary>
     /// Maximum length of input in the text editor
     /// </summary>
-    public int TextEditorMaximumLength { get; set; } = 4096;
+    public int TextEditorMaximumLength { get; set; } = 16384;
 
     /// <summary>
     /// Automatically replace double spaces in the text.
