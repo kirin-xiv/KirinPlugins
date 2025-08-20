@@ -24,7 +24,7 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
-    "Changelog": "Centralized repository migration - improved distribution and updates"
+    "Changelog": "Version 2.0.0.0 - FULL AUTOMATION! Auto-posts rules to shout, handles countdown timing, collects rolls, and posts results to yell. Features customizable Discord/Wi-Fi message and easy settings access. Maximum laziness achieved!"
   },
   {
     "Author": "Kirin",
