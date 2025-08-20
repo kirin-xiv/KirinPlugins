@@ -1,5 +1,7 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace EorzeanScribe.Helpers;
@@ -33,11 +35,18 @@ internal sealed class ThesaurusAPI : IDisposable
     public ThesaurusAPI()
     {
         _httpClient = new HttpClient();
+        _httpClient.Timeout = TimeSpan.FromSeconds(10); // Add 10 second timeout
+        
+        // Set a User-Agent header
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "EorzeanScribe/1.5.0 FFXIV-Plugin");
+        
         // Only add API key header if it's not empty
         if (!string.IsNullOrWhiteSpace(EorzeanScribe.Configuration.ThesaurusApiKey))
         {
             _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
         }
+        
+        EorzeanScribe.PluginLog.Debug($"ThesaurusAPI initialized. API Key configured: {!string.IsNullOrWhiteSpace(EorzeanScribe.Configuration.ThesaurusApiKey)}");
         State = ApiState.Idle;
     }
 
@@ -54,11 +63,12 @@ internal sealed class ThesaurusAPI : IDisposable
             return noKeyResult;
         }
         
-        // Update API key header if it was added after construction
-        if (!_httpClient.DefaultRequestHeaders.Contains("X-Api-Key"))
-        {
-            _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
-        }
+        // Clear and re-add the API key header to ensure it's current
+        _httpClient.DefaultRequestHeaders.Remove("X-Api-Key");
+        _httpClient.DefaultRequestHeaders.Add("X-Api-Key", EorzeanScribe.Configuration.ThesaurusApiKey);
+        
+        EorzeanScribe.PluginLog.Debug($"Making API request for word: {word}");
+        EorzeanScribe.PluginLog.Debug($"API Key present: {!string.IsNullOrWhiteSpace(EorzeanScribe.Configuration.ThesaurusApiKey)}");
 
         Loading = true;
         State = ApiState.Searching;
@@ -67,6 +77,7 @@ internal sealed class ThesaurusAPI : IDisposable
         try
         {
             string url = $"https://api.api-ninjas.com/v1/thesaurus?word={Uri.EscapeDataString(word)}";
+            EorzeanScribe.PluginLog.Debug($"Request URL: {url}");
             
             _progress = 0.5f;
             
@@ -74,9 +85,13 @@ internal sealed class ThesaurusAPI : IDisposable
             
             _progress = 0.8f;
             
+            EorzeanScribe.PluginLog.Debug($"API Response Status: {response.StatusCode}");
+            EorzeanScribe.PluginLog.Debug($"API Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}={string.Join(",", h.Value)}"))}");
+            
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
+                EorzeanScribe.PluginLog.Debug($"API Response Content: {json}");
                 var apiResponse = JsonConvert.DeserializeObject<ApiNinjasThesaurusResponse>(json);
                 
                 _progress = 1.0f;
@@ -84,13 +99,15 @@ internal sealed class ThesaurusAPI : IDisposable
                 var result = new WordSearchResult(word);
                 var thesaurusEntry = new ThesaurusEntry();
                 thesaurusEntry.Word = word;
+                thesaurusEntry.Type = "Thesaurus"; // API Ninjas doesn't provide word type
+                thesaurusEntry.Definition = word; // Use the word itself since no definition is provided
                 
                 // Add synonyms
-                if (apiResponse?.Synonyms != null)
+                if (apiResponse?.Synonyms != null && apiResponse.Synonyms.Count > 0)
                     thesaurusEntry.AddSynonyms(apiResponse.Synonyms);
                 
                 // Add antonyms  
-                if (apiResponse?.Antonyms != null)
+                if (apiResponse?.Antonyms != null && apiResponse.Antonyms.Count > 0)
                     thesaurusEntry.AddAntonyms(apiResponse.Antonyms);
                 
                 result.AddEntry(thesaurusEntry);
@@ -105,11 +122,14 @@ internal sealed class ThesaurusAPI : IDisposable
             }
             else
             {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                EorzeanScribe.PluginLog.Error($"API request failed with status {response.StatusCode}: {errorContent}");
+                
                 State = ApiState.Failed;
                 Loading = false;
                 var errorResult = new WordSearchResult(word);
                 var errorEntry = new ThesaurusEntry();
-                errorEntry.Word = $"API request failed: {response.StatusCode}";
+                errorEntry.Word = $"API request failed: {response.StatusCode} - {response.ReasonPhrase}";
                 errorResult.AddEntry(errorEntry);
                 _history.Insert(0, errorResult);
                 return errorResult;
@@ -137,11 +157,14 @@ internal sealed class ThesaurusAPI : IDisposable
     {
         try
         {
-            await SearchAsync(word);
+            EorzeanScribe.PluginLog.Debug($"SearchThesaurus called for word: {word}");
+            await SearchAsync(word).ConfigureAwait(false);
+            EorzeanScribe.PluginLog.Debug($"SearchThesaurus completed for word: {word}");
         }
         catch (Exception ex)
         {
             EorzeanScribe.PluginLog.Error($"Thesaurus search failed: {ex.Message}");
+            EorzeanScribe.PluginLog.Error($"Stack trace: {ex.StackTrace}");
             State = ApiState.Failed;
             Loading = false;
             

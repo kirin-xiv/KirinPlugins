@@ -4,7 +4,7 @@
   "Punchline": "Enhanced writing tools for roleplayers. [BETA]",
   "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
   "InternalName": "EorzeanScribe",
-  "AssemblyVersion": "1.5.0.3",
+  "AssemblyVersion": "1.6.0.0",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 13,
   "LoadRequiredState": 0,

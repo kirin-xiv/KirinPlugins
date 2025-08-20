@@ -12,6 +12,11 @@ internal static class EorzeanScribeUI
     internal static Clock Clock { get; private set; } = new();
 
     internal static float LineHeight { get; private set; }
+    
+    /// <summary>
+    /// Single static instance of the main EorzeanScribe window
+    /// </summary>
+    private static ScratchPadUI? _mainWindow = null;
 
     /// <summary>
     /// Returns a readonly list containing all currently registered windows.
@@ -256,12 +261,23 @@ internal static class EorzeanScribeUI
 #endregion
 
     /// <summary>
-    /// Shows the main ScratchPad.
+    /// Shows the main EorzeanScribe window (single static instance).
     /// </summary>
-    internal static void ShowScratchPad() { if ( !ShowWindow( ScratchPadUI.CreateWindowName(1) ) ) AddWindow( new ScratchPadUI() { IsOpen = true } ); }
+    internal static void ShowScratchPad() 
+    { 
+        // Create the window if it doesn't exist
+        if (_mainWindow == null)
+        {
+            _mainWindow = new ScratchPadUI();
+            AddWindow(_mainWindow);
+        }
+        
+        // Always show the window
+        _mainWindow.IsOpen = true;
+    }
 
     /// <summary>
-    /// Shows the main ScratchPad (ignores ID parameter for MVP simplicity).
+    /// Shows the main EorzeanScribe window (ignores ID parameter for simplicity).
     /// </summary>
     /// <param name="id">The id of the pad to be shown (ignored).</param>
     internal static void ShowScratchPad( int id ) => ShowScratchPad();

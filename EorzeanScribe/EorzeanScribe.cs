@@ -69,7 +69,7 @@ public sealed class EorzeanScribe : IDalamudPlugin
     /// <summary>
     /// Command to open the settings window.
     /// </summary>
-    private const string SETTINGS_CMD_STRING = "/wordsmith";
+    private const string SETTINGS_CMD_STRING = "/esconfig";
 
     /// <summary>
     /// Command to open the thesaurus.
@@ -79,7 +79,7 @@ public sealed class EorzeanScribe : IDalamudPlugin
     /// <summary>
     /// Main unified command for EorzeanScribe.
     /// </summary>
-    private const string MAIN_CMD_STRING = "/eorzeascribe";
+    private const string MAIN_CMD_STRING = "/eorzeanscribe";
 
     /// <summary>
     /// Short alias for the main command.
@@ -141,12 +141,20 @@ public sealed class EorzeanScribe : IDalamudPlugin
         
         // Get the configuration.
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        
+        // Migration: Add API key if it's missing (for existing configs)
+        if (string.IsNullOrWhiteSpace(Configuration.ThesaurusApiKey))
+        {
+            PluginLog.Info("Migrating configuration: Adding default API key");
+            Configuration.ThesaurusApiKey = "IKvpY7mhExTydfNLj8oh5w==yroLZCLNcg8gu600";
+            Configuration.Save(false);
+        }
 
 
         // Add unified commands for EorzeanScribe
         CommandManager.AddHandler(MAIN_CMD_STRING, new CommandInfo( OnEorzeanScribeCommand )
         {
-            HelpMessage = "Main EorzeanScribe command. Use '/eorzeascribe help' for available options."
+            HelpMessage = "Main EorzeanScribe command. Use '/eorzeanscribe help' for available options."
         });
         CommandManager.AddHandler(SHORT_CMD_STRING, new CommandInfo( OnEorzeanScribeCommand )
         {
@@ -154,11 +162,11 @@ public sealed class EorzeanScribe : IDalamudPlugin
         });
 
         // Add legacy commands for backward compatibility
-        CommandManager.AddHandler(THES_CMD_STRING, new CommandInfo( ( c, a ) => { EorzeanScribeUI.ShowThesaurus(); } ) { HelpMessage = "[Legacy] Display the thesaurus window. Use '/es thesaurus' instead." });
-        CommandManager.AddHandler(SETTINGS_CMD_STRING, new CommandInfo( ( c, a ) => { EorzeanScribeUI.ShowSettings(); }) { HelpMessage = "[Legacy] Display the configuration window. Use '/es settings' instead." });
+        CommandManager.AddHandler(THES_CMD_STRING, new CommandInfo( ( c, a ) => { EorzeanScribeUI.ShowThesaurus(); } ) { HelpMessage = "[Legacy] Opens EorzeanScribe thesaurus. Use '/es thesaurus' instead." });
+        CommandManager.AddHandler(SETTINGS_CMD_STRING, new CommandInfo( ( c, a ) => { EorzeanScribeUI.ShowSettings(); }) { HelpMessage = "Opens EorzeanScribe settings window." });
         CommandManager.AddHandler(SCRATCH_CMD_STRING, new CommandInfo( OnScratchCommand )
         {
-            HelpMessage = "[Legacy] Opens or creates a scratch pad. Use '/es' or '/es pad [name]' instead."
+            HelpMessage = "[Legacy] Opens EorzeanScribe. Use '/es' instead."
         });
 
         PluginInterface.UiBuilder.OpenMainUi += EorzeanScribeUI.ShowScratchPad;
@@ -267,13 +275,13 @@ public sealed class EorzeanScribe : IDalamudPlugin
     private void ShowHelpMessage()
     {
         var helpText = "EorzeanScribe Commands:\n" +
-                      "/es or /eorzeascribe - Open main writing pad\n" +
-                      "/es pad [id/name] - Open specific writing pad\n" +
+                      "/es or /eorzeanscribe - Open EorzeanScribe\n" +
                       "/es settings - Open settings window\n" +
                       "/es thesaurus - Open thesaurus window\n" +
                       "/es help - Show this help message\n\n" +
-                      "Legacy commands still work:\n" +
-                      "/scratchpad, /wordsmith, /thesaurus";
+                      "Additional commands:\n" +
+                      "/esconfig - Settings window\n" +
+                      "/thesaurus - Thesaurus window";
         
         NotificationManager.AddNotification(new()
         {

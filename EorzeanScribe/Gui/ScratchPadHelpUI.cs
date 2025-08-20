@@ -20,156 +20,52 @@ internal sealed class ScratchPadHelpUI : Window
     }
     public override void Draw()
     {
-        if (ImGui.BeginTabBar($"{EorzeanScribe.APPNAME}HelpTabBar"))
-        {
-            // General tab.
-            if (ImGui.BeginTabItem($"General##HelpTabBarItem"))
-            {
-                ImGui.TextWrapped( "Thesaurus functionality provided through API Ninjas API. The plugin includes up to 10,000 free thesaurus queries per month. If usage exceeds this limit, additional options may be explored." );
-                ImGui.Separator();
-                // Create multiple subsections of text for the user to read over.
-                ImGui.TextWrapped("Scratch Pads are fairly easy to use. First, on the top left, there is a drop down menu where you get to select what chat channel prefix you want to use. If you use choose /tell, a texbox will appear where you can type the user name and world or placeholders.");
-                ImGui.Separator();
-                ImGui.Spacing();
-                ImGui.TextWrapped("Once you're done typing, try hitting the Copy button to copy the text then paste it in the chat. Remember, if there is more than one block, you'll have to copy/paste and send each block one at a time. Just hit the copy button again to copy the next block!");
-                ImGui.Separator();
-                ImGui.Spacing();
-                ImGui.TextWrapped("Not sure if you spelt everything correctly? Try using the Spell Check button. It will find any words not in the internal dictionary and let you know then offer you the chance to replace the word, add it to the dictionary, or if you just hit enter in the blank text box it will ignore the spelling.");
-                ImGui.Separator();
-                ImGui.Spacing();
-                ImGui.TextWrapped("Of course, the Clear button will clear any text you've written and Delete Pad will close the pad and clear all the data.");
-                ImGui.Spacing();
-                ImGui.TextWrapped("The scratch pad provides various customization options in the settings to control text formatting and chunk markers.");
-                ImGui.Separator();
-                ImGui.Spacing();
-                ImGui.TextWrapped("/Tell is a little different than other headers because it requires a target. Your target can be User Name@World or any usual placehold.\n\nMore information on Placeholders in the Placeholders tab.");
-                ImGui.EndTabItem();
-            }
-
-            // Placeholders tab.
-            if (ImGui.BeginTabItem($"Placeholders##HelpTabBarItem"))
-            {
-                // Create a table.
-                if (ImGui.BeginTable("ScratchPadTellHelpPlaceholderTable", 2, ImGuiTableFlags.Borders))
-                {
-                    // The table will have two headers, one for placeholder text and one for placeholder description.
-                    ImGui.TableSetupColumn("PlaceholderValueColumn", ImGuiTableColumnFlags.WidthFixed, 125 * ImGuiHelpers.GlobalScale);
-                    ImGui.TableSetupColumn("PlaceholderValueColumn", ImGuiTableColumnFlags.WidthStretch, 2);
-
-                    // Setup the column headers.
-                    ImGui.TableNextColumn();
-                    ImGui.TableHeader("Placeholder##ColumnHeader");
-
-                    ImGui.TableNextColumn();
-                    ImGui.TableHeader("Description##ColumnHeader");
-
-                    // Create a string array with all of the placeholders.
-                    string[] placeholders = new string[]
-                    {
-                        "<t>, <target>",
-                        "<tt>, <t2t>",
-                        "<me>, <0>",
-                        "<r>, <reply>",
-                        "<1> - <8>",
-                        "<f>, <focus>",
-                        "<lt>, <lasttarget>",
-                        "<attack1> - <attack5>",
-                        "<bind1> - <bind3>",
-                        "<square>",
-                        "<circle>",
-                        "<cross>",
-                        "<triangle>",
-                        "<mo>, <mouse>"
-                    };
-
-                    // Create an array with all of the placeholder definitions at the same index
-                    // as the placeholder in the previous array.
-                    string[] descriptions = new string[]
-                    {
-                        "Your current target.",
-                        "The target of your current target.",
-                        "Yourself!",
-                        "The last person to /tell you.",
-                        "Party member by number.",
-                        "Your focus target.",
-                        "Your last target.",
-                        "Person with the Attack 1-5 marker over their head.",
-                        "Person with the Bind 1-3 marker over their head.",
-                        "Person with the Square marker over their head.",
-                        "Person with the Circle marker over their head.",
-                        "Person with the Cross marker over their head.",
-                        "Person with the Triangle marker over their head.",
-                        "The person your mouse is currently over."
-                    };
-
-                    // Iterate through both arrays simultaneously and put the data in the
-                    // table left then right.
-                    for (int i = 0; i < placeholders.Length; ++i)
-                    {
-                        ImGui.TableNextColumn();
-                        ImGui.Text(placeholders[i]);
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextWrapped(descriptions[i]);
-                    }
-
-                    ImGui.EndTable();
-                }
-                ImGui.EndTabItem();
-            }
-
-            if (ImGui.BeginTabItem($"Roleplaying##HelpTabBarItem"))
-            {
-                ImGui.TextWrapped($"Some useful terms to know about roleplaying.");
-                if (ImGui.BeginTable("##RoleplayTermsHelpTable", 2))
-                {
-                    ImGui.TableSetupColumn("RoleplayHelpTermColumn", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("God Modding").X);
-                    ImGui.TableSetupColumn("RoleplayHelpDescriptionColumn", ImGuiTableColumnFlags.WidthStretch);
-
-                    ImGui.TableNextColumn();
-                    ImGui.TableHeader("Term");
-
-                    ImGui.TableNextColumn();
-                    ImGui.TableHeader("Description");
-
-                    string[] terms =
-                    {
-                        "IC",
-                        "OOC",
-                        "RP",
-                        "MRP",
-                        "ERP",
-                        "WU",
-                        "God Modding",
-                        "Metagaming",
-                    };
-
-                    string[] desc =
-                    {
-                        "Stands for \"In Character\" which means any text you enter is as your character, not as yourself.",
-                        "Stands for \"Out of Character\" which means you are speaking as yourself.",
-                        "Stands for \"Roleplay\" or \"Roleplaying\".",
-                        "Stands for \"Mature Roleplay\". MRP is generally roleplay with adult themes but not necessarily sexual (think drugs or gangs).",
-                        "Stands for \"Erotic Roleplay\". This kind of roleplay is sexual in nature.",
-                        "Stands for \"Walk Up\" meaning you don't mind if a stranger walks up and joins your RP or starts a new one with you.",
-                        "This is when your roleplay tries to control the other player's actions and dictates what they do.",
-                        "This is when you use information your character doesn't know in character. (i.e. someone tells you \"My character hates cheese\" OOC and then your character mentions knowing that the other character hates cheese even though it was impossible for them to know that."
-                    };
-
-                    for (int i = 0; i < terms.Length && i < desc.Length; ++i)
-                    {
-                        ImGui.TableNextColumn();
-                        ImGui.TextWrapped(terms[i]);
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextWrapped(desc[i]);
-                    }
-                    ImGui.EndTable();
-                }
-                ImGui.EndTabItem();
-            }
-
-            ImGui.EndTabBar();
-        }
+        ImGui.Text("Getting Started");
+        ImGui.Separator();
+        ImGui.Spacing();
+        
+        ImGui.TextWrapped("EorzeanScribe helps you write longer messages for roleplay in FFXIV. Since the game limits how much you can type at once, this plugin automatically breaks your text into chunks that fit.");
+        
+        ImGui.Spacing();
+        ImGui.Text("How to Use");
+        ImGui.Separator();
+        ImGui.Spacing();
+        
+        ImGui.TextWrapped("1. Choose your chat channel from the dropdown at the top (Say, Party, Tell, etc.)");
+        ImGui.TextWrapped("2. Type your message in the large text box - write as much as you want!");
+        ImGui.TextWrapped("3. Your text automatically gets split into chunks that fit FFXIV's chat limit");
+        ImGui.TextWrapped("4. Each chunk has its own Copy and Post buttons:");
+        ImGui.Indent();
+        ImGui.TextWrapped("• Copy - Copies that chunk to your clipboard");
+        ImGui.TextWrapped("• Post to Chat - Sends it directly to the game chat");
+        ImGui.Unindent();
+        
+        ImGui.Spacing();
+        ImGui.Text("Spell Checking");
+        ImGui.Separator();
+        ImGui.Spacing();
+        
+        ImGui.TextWrapped("Spell checking happens automatically as you type. When there's a misspelling:");
+        ImGui.Indent();
+        ImGui.TextWrapped("• The word appears in red in your text");
+        ImGui.TextWrapped("• Suggestions appear below the text box");
+        ImGui.TextWrapped("• Click a suggestion to fix it instantly");
+        ImGui.TextWrapped("• Or type your own correction and press Enter");
+        ImGui.TextWrapped("• Click 'Add to Dictionary' to remember custom words");
+        ImGui.Unindent();
+        
+        ImGui.Spacing();
+        ImGui.Text("Tips");
+        ImGui.Separator();
+        ImGui.Spacing();
+        
+        ImGui.TextWrapped("• The Clear button at the bottom wipes your text (with undo available)");
+        ImGui.TextWrapped("• Access the Thesaurus from the menu to find better words");
+        ImGui.TextWrapped("• Check Settings to customize chunk markers and text colors");
+        ImGui.TextWrapped("• For /tell, enter the recipient as 'Name@Server' or use placeholders like <t> for target");
+        
+        ImGui.Spacing();
+        ImGui.Spacing();
+        ImGui.TextColored(new Vector4(0.7f, 0.7f, 0.7f, 1.0f), "Happy roleplaying!");
     }
 }

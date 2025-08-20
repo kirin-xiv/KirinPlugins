@@ -288,31 +288,6 @@ internal static class Extensions
     /// <summary>
     /// Spaces a <see cref="string"/> by capital letters. Useful for adding spaces to PascalCasing
     /// </summary>
-    /// <param name="s"><see cref="string"/> to space.</param>
-    /// <returns>A properly spaced <see cref="string"/></returns>
-    internal static string SpaceByCaps( this string s )
-    {
-        // If there aren't at least two characters then return.
-        if ( s.Length < 2 )
-            return s;
-
-        string result = s[0].ToString();
-
-        string caps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        // Iterate through each character not in the first index
-        for ( int i = 1; i < s.Length; ++i )// char c in s[1..^0])
-        {
-            // If the character is a capital letter and the letter before
-            // it is not then add a space.
-            if ( caps.Contains( s[i] ) && !caps.Contains( s[i - 1] ) )
-                result += " ";
-
-            // Add the character to the result.
-            result += s[i];
-        }
-
-        return result;
-    }
 
     /// <summary>
     /// Removes all double spaces from a <see cref="string"/>.

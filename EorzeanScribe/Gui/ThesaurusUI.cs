@@ -1,8 +1,12 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface;
 using EorzeanScribe.Helpers;
 using EorzeanScribe;
+using System.Numerics;
+using System.Collections.Generic;
+using static Dalamud.Interface.UiBuilder;
 
 namespace EorzeanScribe.Gui;
 
@@ -143,35 +147,113 @@ internal sealed class ThesaurusUI : Window, IDisposable
             {
                 ImGui.Separator();
                 ImGui.Spacing();
-                ImGui.TextWrapped("Synonyms");
-                ImGui.TextWrapped(entry.SynonymString);
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.TextColored(new Vector4(0.4f, 0.8f, 0.4f, 1.0f), FontAwesomeIcon.Heart.ToIconString());
+                ImGui.PopFont();
+                ImGui.SameLine();
+                ImGui.TextColored(new Vector4(0.4f, 0.8f, 0.4f, 1.0f), " Synonyms");
+                ImGui.Spacing();
+                DrawWordButtons(entry.Synonyms, new Vector4(0.3f, 0.7f, 0.3f, 1.0f));
             }
 
             if (entry.Related.Count > 0)
             {
                 ImGui.Separator();
                 ImGui.Spacing();
-                ImGui.TextWrapped("Related Words");
-                ImGui.TextWrapped(entry.RelatedString);
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.TextColored(new Vector4(0.4f, 0.6f, 0.8f, 1.0f), FontAwesomeIcon.Link.ToIconString());
+                ImGui.PopFont();
+                ImGui.SameLine();
+                ImGui.TextColored(new Vector4(0.4f, 0.6f, 0.8f, 1.0f), " Related Words");
+                ImGui.Spacing();
+                DrawWordButtons(entry.Related, new Vector4(0.3f, 0.5f, 0.7f, 1.0f));
             }
 
             if (entry.NearAntonyms.Count > 0)
             {
                 ImGui.Separator();
                 ImGui.Spacing();
-                ImGui.TextWrapped("Near Antonyms");
-                ImGui.TextWrapped(entry.NearAntonymString);
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.TextColored(new Vector4(0.8f, 0.6f, 0.4f, 1.0f), FontAwesomeIcon.ExclamationTriangle.ToIconString());
+                ImGui.PopFont();
+                ImGui.SameLine();
+                ImGui.TextColored(new Vector4(0.8f, 0.6f, 0.4f, 1.0f), " Near Antonyms");
+                ImGui.Spacing();
+                DrawWordButtons(entry.NearAntonyms, new Vector4(0.7f, 0.5f, 0.3f, 1.0f));
             }
 
             if (entry.Antonyms.Count > 0)
             {
                 ImGui.Separator();
                 ImGui.Spacing();
-                ImGui.TextWrapped("Antonyms");
-                ImGui.TextWrapped(entry.AntonymString);
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.TextColored(new Vector4(0.8f, 0.4f, 0.4f, 1.0f), FontAwesomeIcon.HeartBroken.ToIconString());
+                ImGui.PopFont();
+                ImGui.SameLine();
+                ImGui.TextColored(new Vector4(0.8f, 0.4f, 0.4f, 1.0f), " Antonyms");
+                ImGui.Spacing();
+                DrawWordButtons(entry.Antonyms, new Vector4(0.7f, 0.3f, 0.3f, 1.0f));
             }
             ImGui.Unindent();
         }
+    }
+
+    /// <summary>
+    /// Draws a collection of words as clickable buttons in a flowing layout
+    /// </summary>
+    /// <param name="words">The collection of words to display</param>
+    /// <param name="buttonColor">The color for the buttons</param>
+    private void DrawWordButtons(IReadOnlyList<string> words, Vector4 buttonColor)
+    {
+        float windowWidth = ImGui.GetContentRegionAvail().X;
+        float buttonPadding = ImGui.GetStyle().ItemSpacing.X;
+        float currentLineWidth = 0f;
+        
+        ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(buttonColor.X + 0.1f, buttonColor.Y + 0.1f, buttonColor.Z + 0.1f, 1.0f));
+        ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(buttonColor.X + 0.2f, buttonColor.Y + 0.2f, buttonColor.Z + 0.2f, 1.0f));
+        
+        for (int i = 0; i < words.Count; i++)
+        {
+            string word = words[i].Trim();
+            if (string.IsNullOrEmpty(word)) continue;
+            
+            Vector2 buttonSize = ImGui.CalcTextSize(word);
+            buttonSize.X += ImGui.GetStyle().FramePadding.X * 2;
+            buttonSize.Y += ImGui.GetStyle().FramePadding.Y * 2;
+            
+            // Check if button fits on current line
+            if (currentLineWidth > 0 && currentLineWidth + buttonSize.X + buttonPadding > windowWidth)
+            {
+                // Start new line
+                currentLineWidth = 0f;
+            }
+            
+            // Add button to same line if not the first on the line
+            if (currentLineWidth > 0)
+            {
+                ImGui.SameLine();
+            }
+            
+            // Draw the button
+            if (ImGui.Button($"{word}##thes_btn_{i}"))
+            {
+                // When clicked, search for this word
+                this._query = word;
+                this._searchHelper.SearchThesaurus(word);
+            }
+            
+            // Add tooltip showing the word (useful for long words that might be truncated)
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip($"Click to search for '{word}'");
+            }
+            
+            currentLineWidth += buttonSize.X + buttonPadding;
+        }
+        
+        ImGui.PopStyleColor(3);
+        ImGui.Spacing();
     }
     #endregion
 
