@@ -3,7 +3,7 @@
     "Author": "Kirin",
     "Name": "Truth or Dare",
     "InternalName": "FFToD",
-    "AssemblyVersion": "2.0.0.1",
+    "AssemblyVersion": "2.0.0.2",
     "Description": "Truth or Dare mini-game automation plugin for FFXIV",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/FFToD-Release",
@@ -24,13 +24,13 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
-    "Changelog": "Version 2.0.0.1 - Added Discord and Ko-Fi support buttons for community engagement"
+    "Changelog": "Version 2.0.0.2 - Improved Discord and Ko-Fi button UI design (icon+text integrated buttons)"
   },
   {
     "Author": "Kirin",
     "Name": "SpamrollGiveaway",
     "InternalName": "SpamrollGiveaway",
-    "AssemblyVersion": "2.3.5.1",
+    "AssemblyVersion": "2.3.5.2",
     "Description": "A FFXIV plugin for hosting giveaways where the host sets winning numbers and players use /random until someone hits the target numbers.",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/SpamrollGiveaway-Release",
@@ -51,13 +51,13 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/SpamrollGiveaway.ico",
     "ImageUrls": [],
-    "Changelog": "Version 2.3.5.1 - Added Discord and Ko-Fi support buttons for community engagement"
+    "Changelog": "Version 2.3.5.2 - Improved Discord and Ko-Fi button UI design (icon+text integrated buttons)"
   },
   {
     "Author": "Kirin",
     "Name": "EorzeanScribe (Beta)",
     "InternalName": "EorzeanScribe",
-    "AssemblyVersion": "1.8.5.1",
+    "AssemblyVersion": "1.8.5.2",
     "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/EorzeaScribe",
@@ -78,6 +78,6 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/EorzeanScribe.ico",
     "ImageUrls": [],
-    "Changelog": "Version 1.8.5.1 - Added Discord and Ko-Fi support buttons for community engagement"
+    "Changelog": "Version 1.8.5.2 - Improved Discord and Ko-Fi button UI design (icon+text integrated buttons)"
   }
 ]
