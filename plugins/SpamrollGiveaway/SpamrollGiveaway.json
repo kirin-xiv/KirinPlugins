@@ -2,7 +2,7 @@
   "Author": "Kirin",
   "Name": "SpamrollGiveaway",
   "InternalName": "SpamrollGiveaway",
-  "AssemblyVersion": "2.3.5.2",
+  "AssemblyVersion": "2.3.5.3",
   "Description": "A FFXIV plugin for hosting giveaways where the host sets winning numbers and players use /random until someone hits the target numbers.",
   "ApplicableVersion": "any",
   "Tags": [
