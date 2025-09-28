@@ -3,7 +3,7 @@
     "Author": "Kirin",
     "Name": "Truth or Dare",
     "InternalName": "FFToD",
-    "AssemblyVersion": "2.0.0.5",
+    "AssemblyVersion": "2.1.0.0",
     "Description": "Truth or Dare mini-game automation plugin for FFXIV",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/FFToD-Release",
@@ -24,7 +24,7 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
-    "Changelog": "Version 2.0.0.5 - Fixed a bug"
+    "Changelog": "Version 2.1.0.0 - Made a SEXY UI with HexaUI"
   },
   {
     "Author": "Kirin",
