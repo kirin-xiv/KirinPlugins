@@ -3,7 +3,7 @@
     "Author": "Kirin",
     "Name": "Truth or Dare",
     "InternalName": "FFToD",
-    "AssemblyVersion": "2.1.0.0",
+    "AssemblyVersion": "2.3.0.0",
     "Description": "Truth or Dare mini-game automation plugin for FFXIV",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/FFToD-Release",
