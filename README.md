@@ -24,7 +24,7 @@ A collection of original Dalamud plugins for Final Fantasy XIV, focused on party
 ## Plugins
 
 ### Truth or Dare (FFToD)
-**Version:** 2.3.0.1
+**Version:** 2.3.5.0
 
 Fully automated Truth or Dare game management for party entertainment.
 
@@ -36,7 +36,7 @@ Fully automated Truth or Dare game management for party entertainment.
 - Winner-specific chat channel support
 - Smart tiebreaker system
 - Duplicate winner prevention
-
+- New Jackpot System
 ---
 
 ### Spamroll Giveaway
