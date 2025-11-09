@@ -1,0 +1,6 @@
+# Truth or Dare - Authorized Users
+# Format: Character Name@World
+# Lines starting with # are comments
+
+Naemona Anemone@Golem
+Kirin Avenleigh@Malboro
