@@ -2,7 +2,7 @@
   "Author": "Kirin",
   "Name": "Truth or Dare",
   "InternalName": "FFToD",
-  "AssemblyVersion": "2.4.6.0",
+  "AssemblyVersion": "2.4.7.0",
   "Description": "Truth or Dare mini-game automation plugin for FFXIV",
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/kirin-xiv/FFToD",
@@ -13,7 +13,7 @@
     "automation",
     "rolls"
   ],
-  "DalamudApiLevel": 13,
+  "DalamudApiLevel": 14,
   "LoadRequiredState": 0,
   "LoadSync": false,
   "CanUnloadAsync": false,
