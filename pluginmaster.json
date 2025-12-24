@@ -57,7 +57,7 @@
     "Author": "Kirin",
     "Name": "EorzeanScribe (Beta)",
     "InternalName": "EorzeanScribe",
-    "AssemblyVersion": "1.9.0.1",
+    "AssemblyVersion": "1.9.1.0",
     "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/EorzeaScribe",
@@ -78,6 +78,6 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/EorzeanScribe.ico",
     "ImageUrls": [],
-    "Changelog": "Version 1.9.0.1 - Fixed RapidAPI key integration for enhanced thesaurus features"
+    "Changelog": "Version 1.9.1.0 - Improved text editor with natural paragraph breaks and better multiline editing experience"
   }
 ]
