@@ -3,6 +3,7 @@
 # Lines starting with # are comments
 
 Naemona Anemone@Golem
+Naemona Anemone@Rafflesia
 Kirin Avenleigh@Malboro
 Leonie Avenleigh@Malboro
 Mistress Maggie@Lamia
