@@ -31,7 +31,7 @@ Eve Angelic@Balmung
 Charles Cadence@Jenova
 No'ra Rahz@Balmung
 Snow Goddess@Coeurl
-Kera Nox'atora@Seraph
+Kera Atora@Seraph
 Soapy Topps@Rafflesia
 Niaevyn Psi@Behemoth
 Luna Soulheart@Jenova
@@ -66,3 +66,8 @@ Lucy Kaede@Moogle
 Salix Babylonicat@Cerberus
 Sh'iri Prisil@Cerberus
 Ayame Mokoto@Odin
+Suzume Yugure@Seraph 
+Syl'valian Fisalia@Coeurl
+Kera Atora@Seraph
+Suzume Yugure@Seraph 
+Syl'valian Fisalia@Coeurl
