@@ -18,7 +18,7 @@ https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/pluginmaster.json
 Truth or Dare game automation plugin for FFXIV.
 
 ### Spamroll Giveaway
-**Status:** Unmaintained
+**Status:** Open sourced at https://github.com/kirin-xiv/OpenSpamroll
 
 Giveaway management plugin.
 
