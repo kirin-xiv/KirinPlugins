@@ -24,7 +24,7 @@
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
-    "Changelog": "Version 2.5.0.1 - Auto-skip players with customizable blast messages. Bonus Prizes, Highest Asks Lowest, Kaya Noir theme. Extended roll timeout to 60s. UI polish and QoL improvements."
+    "Changelog": "Bonus Prizes: set winning numbers that award optional prizes without affecting round outcome. New Highest Asks Lowest winner mode. Auto-skip players with customizable blast announcements. Kaya Noir theme. Extended roll timeout to 60s. UI polish and QoL improvements."
 },
   {
     "Author": "Kirin",
