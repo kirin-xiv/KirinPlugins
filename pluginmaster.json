@@ -1,5 +1,5 @@
 [
-{
+  {
     "Author": "Kirin",
     "Name": "Truth or Dare",
     "InternalName": "FFToD",
@@ -7,7 +7,13 @@
     "Description": "Truth or Dare mini-game automation plugin for FFXIV. Source: github.com/kirin-xiv/OpenToD",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/FFToD-Release",
-    "Tags": ["minigame", "social", "chat", "automation", "rolls"],
+    "Tags": [
+      "minigame",
+      "social",
+      "chat",
+      "automation",
+      "rolls"
+    ],
     "DalamudApiLevel": 15,
     "LoadRequiredState": 0,
     "LoadSync": false,
@@ -20,12 +26,12 @@
     "DownloadLinkInstall": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
     "DownloadLinkUpdate": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
     "DownloadLinkTesting": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
-    "DownloadCount": 0,
+    "DownloadCount": 137,
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
     "Changelog": "Bonus Prizes: set winning numbers that award optional prizes without affecting round outcome. New Highest Asks Lowest winner mode. Auto-skip players with customizable blast announcements. Kaya Noir theme. Extended roll timeout to 60s. UI polish and QoL improvements."
-},
+  },
   {
     "Author": "Kirin",
     "Name": "SpamrollGiveaway",
@@ -34,7 +40,13 @@
     "Description": "[UNMAINTAINED - Seeking new owner] Giveaway management plugin. Source: github.com/kirin-xiv/OpenSpamroll",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/OpenSpamroll",
-    "Tags": ["giveaway", "random", "contest", "ffxiv", "minigame"],
+    "Tags": [
+      "giveaway",
+      "random",
+      "contest",
+      "ffxiv",
+      "minigame"
+    ],
     "DalamudApiLevel": 15,
     "LoadRequiredState": 0,
     "LoadSync": false,
@@ -61,7 +73,16 @@
     "Description": "[BETA] A comprehensive writing assistant designed for FFXIV roleplayers. Automatically formats your text for seamless in-game chat, includes spell checking, thesaurus integration, and advanced editing tools to enhance your roleplay experience.",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/EorzeaScribe",
-    "Tags": ["roleplay", "writing", "spellcheck", "thesaurus", "text", "formatting", "social", "utility"],
+    "Tags": [
+      "roleplay",
+      "writing",
+      "spellcheck",
+      "thesaurus",
+      "text",
+      "formatting",
+      "social",
+      "utility"
+    ],
     "DalamudApiLevel": 14,
     "LoadRequiredState": 0,
     "LoadSync": false,
