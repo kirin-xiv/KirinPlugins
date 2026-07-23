@@ -3,7 +3,7 @@
     "Author": "Kirin",
     "Name": "Truth or Dare",
     "InternalName": "FFToD",
-    "AssemblyVersion": "2.5.0.0",
+    "AssemblyVersion": "2.5.0.1",
     "Description": "Truth or Dare mini-game automation plugin for FFXIV. Source: github.com/kirin-xiv/OpenToD",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/kirin-xiv/FFToD-Release",
@@ -17,14 +17,14 @@
     "AcceptsFeedback": true,
     "IsHide": false,
     "IsTestingExclusive": false,
-    "DownloadLinkInstall": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.0/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.0/latest.zip",
-    "DownloadLinkTesting": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.0/latest.zip",
+    "DownloadLinkInstall": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
+    "DownloadLinkTesting": "https://github.com/kirin-xiv/OpenToD/releases/download/v2.5.0.1/latest.zip",
     "DownloadCount": 0,
     "LastUpdate": 0,
     "IconUrl": "https://raw.githubusercontent.com/kirin-xiv/KirinPlugins/main/icons/FFToD.ico",
     "ImageUrls": [],
-    "Changelog": "Version 2.5.0.0 - Bonus Prizes: set winning numbers that award optional prizes without affecting round outcome. New Highest Asks Lowest winner mode. Kaya Noir theme. Extended roll timeout to 60s. UI polish and QoL improvements."
+    "Changelog": "Version 2.5.0.1 - Auto-skip players with customizable blast messages. Bonus Prizes, Highest Asks Lowest, Kaya Noir theme. Extended roll timeout to 60s. UI polish and QoL improvements."
 },
   {
     "Author": "Kirin",
